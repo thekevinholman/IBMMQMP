@@ -1,5 +1,5 @@
-# IBM WebSphere SCOM Management Pack
-IBM WebSphere SCOM Management Pack
+# IBM WebSphere MQ SCOM Management Pack
+IBM WebSphere MQ SCOM Management Pack
 Version 3.2.1.0
 
 Management Pack to discover and monitor IBM WebSphere MQ Servers on Windows
