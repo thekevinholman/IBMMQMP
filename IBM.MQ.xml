@@ -2281,7 +2281,7 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`n Script Completed. `n Script Ru
 					<CheckStartupType />
 				</Configuration>
 			</UnitMonitor>
-			<UnitMonitor ID="IBM.MQ.QueueIPPROCS.Monitor" Accessibility="Public" Enabled="true" Target="IBM.MQ.Queue" ParentMonitorID="Health!System.Health.AvailabilityState" Remotable="true" Priority="Normal" TypeID="IBM.MQ.QueueIPPROCS.Monitor.MonitorType" ConfirmDelivery="false">
+			<UnitMonitor ID="IBM.MQ.QueueIPPROCS.Monitor" Accessibility="Public" Enabled="false" Target="IBM.MQ.Queue" ParentMonitorID="Health!System.Health.AvailabilityState" Remotable="true" Priority="Normal" TypeID="IBM.MQ.QueueIPPROCS.Monitor.MonitorType" ConfirmDelivery="false">
 				<Category>AvailabilityHealth</Category>
 				<AlertSettings AlertMessage="IBM.MQ.QueueIPPROCS.Monitor.AlertMessage">
 					<AlertOnState>Error</AlertOnState>
