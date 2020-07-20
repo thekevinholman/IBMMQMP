@@ -1,0 +1,2667 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ManagementPack ContentReadable="true" SchemaVersion="2.0" OriginalSchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+	<Manifest>
+		<Identity>
+			<ID>IBM.MQ</ID>
+			<Version>3.2.1.0</Version>
+		</Identity>
+		<Name>IBM.MQ</Name>
+		<References>
+			<Reference Alias="SC">
+				<ID>Microsoft.SystemCenter.Library</ID>
+				<Version>7.0.8433.0</Version>
+				<PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+			</Reference>
+			<Reference Alias="Windows">
+				<ID>Microsoft.Windows.Library</ID>
+				<Version>7.5.8501.0</Version>
+				<PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+			</Reference>
+			<Reference Alias="System">
+				<ID>System.Library</ID>
+				<Version>7.5.8501.0</Version>
+				<PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+			</Reference>			
+			<Reference Alias="Health">
+				<ID>System.Health.Library</ID>
+				<Version>7.0.8433.0</Version>
+				<PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+			</Reference>
+		    <Reference Alias="Perf">
+			  <ID>System.Performance.Library</ID>
+			  <Version>7.0.8433.0</Version>
+			  <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+		    </Reference>
+			<Reference Alias="MSDL">
+				<ID>Microsoft.SystemCenter.DataWarehouse.Library</ID>
+				<Version>7.1.10226.0</Version>
+				<PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+			</Reference>		  
+		</References>
+	</Manifest>
+	<TypeDefinitions>
+		<EntityTypes>
+			<ClassTypes>
+				<ClassType ID="IBM.MQ.Channel" Accessibility="Public" Abstract="false" Base="Windows!Microsoft.Windows.ApplicationComponent" Hosted="true" Singleton="false" Extension="false">
+					<Property ID="ChannelName" Type="string" AutoIncrement="false" Key="true" CaseSensitive="false" MaxLength="256" MinLength="0" Required="false" Scale="0" />
+					<Property ID="QueueManagerName" Type="string" AutoIncrement="false" Key="false" CaseSensitive="false" MaxLength="256" MinLength="0" Required="false" Scale="0" />
+				</ClassType>
+				<ClassType ID="IBM.MQ.Listener" Accessibility="Public" Abstract="false" Base="Windows!Microsoft.Windows.ApplicationComponent" Hosted="true" Singleton="false" Extension="false">
+					<Property ID="ListenerName" Type="string" AutoIncrement="false" Key="true" CaseSensitive="false" MaxLength="256" MinLength="0" Required="false" Scale="0" />
+					<Property ID="QueueManagerName" Type="string" AutoIncrement="false" Key="false" CaseSensitive="false" MaxLength="256" MinLength="0" Required="false" Scale="0" />
+				</ClassType>
+				<ClassType ID="IBM.MQ.Queue" Accessibility="Public" Abstract="false" Base="Windows!Microsoft.Windows.ApplicationComponent" Hosted="true" Singleton="false" Extension="false">
+					<Property ID="DESCR" Type="string" AutoIncrement="false" Key="false" CaseSensitive="false" MaxLength="256" MinLength="0" Required="false" Scale="0" />
+					<Property ID="MAXDEPTH" Type="string" AutoIncrement="false" Key="false" CaseSensitive="false" MaxLength="256" MinLength="0" Required="false" Scale="0" />
+					<Property ID="MAXMSGL" Type="string" AutoIncrement="false" Key="false" CaseSensitive="false" MaxLength="256" MinLength="0" Required="false" Scale="0" />
+					<Property ID="QueueManagerName" Type="string" AutoIncrement="false" Key="false" CaseSensitive="false" MaxLength="256" MinLength="0" Required="false" Scale="0" />
+					<Property ID="QueueName" Type="string" AutoIncrement="false" Key="true" CaseSensitive="false" MaxLength="256" MinLength="0" Required="false" Scale="0" />
+					<Property ID="TYPE" Type="string" AutoIncrement="false" Key="false" CaseSensitive="false" MaxLength="256" MinLength="0" Required="false" Scale="0" />
+				</ClassType>
+				<ClassType ID="IBM.MQ.QueueManager" Accessibility="Public" Abstract="false" Base="Windows!Microsoft.Windows.ApplicationComponent" Hosted="true" Singleton="false" Extension="false">
+					<Property ID="QueueManagerName" Type="string" AutoIncrement="false" Key="true" CaseSensitive="false" MaxLength="256" MinLength="0" Required="false" Scale="0" />
+				</ClassType>
+				<ClassType ID="IBM.MQ.Server" Accessibility="Public" Abstract="false" Base="Windows!Microsoft.Windows.LocalApplication" Hosted="true" Singleton="false" Extension="false">
+					<Property ID="Version" Type="string" AutoIncrement="false" Key="false" CaseSensitive="false" MaxLength="256" MinLength="0" Required="false" Scale="0" />
+					<Property ID="InstallPath" Type="string" AutoIncrement="false" Key="false" CaseSensitive="false" MaxLength="256" MinLength="0" Required="false" Scale="0" />
+				</ClassType>				
+			</ClassTypes>			
+			<RelationshipTypes>
+				<RelationshipType ID="IBM.MQ.Server.Hosts.QueueManager" Accessibility="Internal" Abstract="false" Base="System!System.Hosting">
+					<Source ID="Source" MinCardinality="0" MaxCardinality="2147483647" Type="IBM.MQ.Server" />
+					<Target ID="Target" MinCardinality="0" MaxCardinality="2147483647" Type="IBM.MQ.QueueManager" />
+				</RelationshipType>
+				<RelationshipType ID="IBM.MQ.QueueManager.Hosts.Channel" Accessibility="Internal" Abstract="false" Base="System!System.Hosting">
+					<Source ID="Source" MinCardinality="0" MaxCardinality="2147483647" Type="IBM.MQ.QueueManager" />
+					<Target ID="Target" MinCardinality="0" MaxCardinality="2147483647" Type="IBM.MQ.Channel" />
+				</RelationshipType>
+				<RelationshipType ID="IBM.MQ.QueueManager.Hosts.Listener" Accessibility="Internal" Abstract="false" Base="System!System.Hosting">
+					<Source ID="Source" MinCardinality="0" MaxCardinality="2147483647" Type="IBM.MQ.QueueManager" />
+					<Target ID="Target" MinCardinality="0" MaxCardinality="2147483647" Type="IBM.MQ.Listener" />
+				</RelationshipType>
+				<RelationshipType ID="IBM.MQ.QueueManager.Hosts.Queue" Accessibility="Internal" Abstract="false" Base="System!System.Hosting">
+					<Source ID="Source" MinCardinality="0" MaxCardinality="2147483647" Type="IBM.MQ.QueueManager" />
+					<Target ID="Target" MinCardinality="0" MaxCardinality="2147483647" Type="IBM.MQ.Queue" />
+				</RelationshipType>
+			</RelationshipTypes>
+		</EntityTypes>			
+    <ModuleTypes>
+      <DataSourceModuleType ID="IBM.MQ.QueuePerformance.Filtered.DS" Accessibility="Public" Batching="false">
+        <Configuration>
+		  <xsd:element minOccurs="1" type="xsd:integer" name="IntervalSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:integer" name="TimeoutSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:string" name="QueueName" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:string" name="QueueManagerName" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />		  
+        </Configuration>
+        <OverrideableParameters>
+		  <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+		  <OverrideableParameter ID="TimeoutSeconds" Selector="$Config/TimeoutSeconds$" ParameterType="int" />
+        </OverrideableParameters>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <DataSource ID="DS" TypeID="IBM.MQ.QueuePerformance.DS">
+                <IntervalSeconds>$Config/IntervalSeconds$</IntervalSeconds>
+                <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
+              </DataSource>
+              <ConditionDetection ID="Filter" TypeID="System!System.ExpressionFilter">
+                <Expression>
+					<And>
+					  <Expression>
+						<SimpleExpression>
+						  <ValueExpression>
+							<XPathQuery Type="String">Property[@Name='QueueName']</XPathQuery>
+						  </ValueExpression>
+						  <Operator>Equal</Operator>
+						  <ValueExpression>
+							<Value Type="String">$Config/QueueName$</Value>
+						  </ValueExpression>
+						</SimpleExpression>
+					  </Expression>
+					  <Expression>
+						<SimpleExpression>
+						  <ValueExpression>
+							<XPathQuery Type="String">Property[@Name='QueueManagerName']</XPathQuery>
+						  </ValueExpression>
+						  <Operator>Equal</Operator>
+						  <ValueExpression>
+							<Value Type="String">$Config/QueueManagerName$</Value>
+						  </ValueExpression>
+						</SimpleExpression>
+					  </Expression>
+					</And>
+		        </Expression>
+              </ConditionDetection>
+            </MemberModules>
+            <Composition>
+              <Node ID="Filter">
+                <Node ID="DS" />
+              </Node>
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.PropertyBagData</OutputType>
+      </DataSourceModuleType>	
+      <DataSourceModuleType ID="IBM.MQ.QueuePerformance.DS" Accessibility="Internal" Batching="false">
+        <Configuration>
+		  <xsd:element minOccurs="1" type="xsd:integer" name="IntervalSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:integer" name="TimeoutSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />	
+        </Configuration>
+        <OverrideableParameters>
+		  <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+		  <OverrideableParameter ID="TimeoutSeconds" Selector="$Config/TimeoutSeconds$" ParameterType="int" />
+        </OverrideableParameters>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <DataSource ID="Scheduler" TypeID="System!System.Scheduler">
+                <Scheduler>
+                  <SimpleReccuringSchedule>
+                    <Interval Unit="Seconds">$Config/IntervalSeconds$</Interval>
+					<SpreadInitializationOverInterval Unit="Seconds">$Config/IntervalSeconds$</SpreadInitializationOverInterval>
+                  </SimpleReccuringSchedule>
+                  <ExcludeDates />
+                </Scheduler>
+              </DataSource>
+              <ProbeAction ID="PA" TypeID="Windows!Microsoft.Windows.PowerShellPropertyBagTriggerOnlyProbe">
+                <ScriptName>IBM.MQ.QueuePerformance.DS.ps1</ScriptName>
+                <ScriptBody>
+#=================================================================================
+#  IBM MQ Performance Datasource Script
+#  Outputs:  QueueDepth and IPPROCS
+#
+#  Author:  Kevin Holman
+#  v1.4
+#=================================================================================
+
+
+# Manual Testing section - put stuff here for manually testing script - typically parameters:
+#=================================================================================
+#=================================================================================
+
+
+# Constants section - modify stuff here:
+#=================================================================================
+# Assign script name variable for use in event logging.  
+$ScriptName = "IBM.MQ.QueuePerformance.DS.ps1"
+$EventID = "17000"
+#=================================================================================
+
+
+# Starting Script section - All scripts get this
+#=================================================================================
+# Gather the start time of the script
+$StartTime = Get-Date
+#Set variable to be used in logging events
+$whoami = whoami
+# Load MOMScript API
+$momapi = New-Object -comObject MOM.ScriptAPI
+#Log script event that we are starting task
+#$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript is starting. `nRunning as ($whoami).")
+#=================================================================================
+
+
+# Begin MAIN script section
+#=================================================================================
+#Get the Queue Managers
+$QMGRcmd = "dspmq"
+$QMGRcmdOut = Invoke-Expression $QMGRcmd
+FOREACH ($QMGRLine in $QMGRcmdOut)
+{
+  $QMGRLineSplit = $QMGRLine.Split("(,)")
+  [string]$QueueManagerName = $QMGRLineSplit[1]
+  # Write-Host "Found QueueManagerName: ($QueueManagerName)"
+
+  #Get the queues from each QueueManager
+  $Qcmd = "cmd /c 'echo Display QL(*) | runmqsc $QueueManagerName'"
+
+  # Write-Host "Getting Queues from ($QM) using $Qcmd"
+
+  $Qout = Invoke-Expression $Qcmd
+  FOREACH ($QLine in $Qout)
+  {
+    $Qmatch = $QLine | Select-String -Pattern 'QUEUE\('
+    IF ($Qmatch)
+    {
+      $QLineSplit = $QLine.Split("(,)")
+      [string]$QueueName = $QLineSplit[1]
+      # Write-Host "Found Queue: ($QueueName)"
+      
+      #####Get the QueueDepth from each queue
+      $QDepthCmd = "cmd /c 'echo Display Queue($QueueName) CURDEPTH | runmqsc $QueueManagerName'"
+      #Write-Host "Getting QueueDepth using: "$QDepthCmd
+      $QDepthOut = Invoke-Expression $QDepthCmd
+      FOREACH ($QDLine in $QDepthOut)
+      {
+        $QDmatch = $QDLine | Select-String -Pattern 'CURDEPTH\('
+        IF ($QDMatch)
+        {
+          $Splitter = "CURDEPTH"
+          $QDLineSplit = $QDLine -Split $Splitter
+          $QD = $QDLineSplit[1]
+          $QD = $QD -Replace "[()]",""
+          $QD = $QD.Trim()
+		  [int]$QueueDepth = $QD
+          #Write-Host "QueueManagerName: ($QueueManagerName) QueueName:($QueueName) QueueDepth:($QueueDepth)"
+		  #$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nQueueManagerName:($QueueManagerName) `nQueueName:($QueueName) `nQueueDepth:($QueueDepth).")
+        }
+      }
+
+      #####Get the IPPROCS from each queue
+      $QIPPROCSCmd = "cmd /c 'echo Display Queue($QueueName) IPPROCS | runmqsc $QueueManagerName'"
+      #Write-Host "Getting IPPROCS using: "$QIPPROCSCmd
+      $QIPPROCSOut = Invoke-Expression $QIPPROCSCmd
+      FOREACH ($QIPPROCSLine in $QIPPROCSOut)
+      {
+        $QIPPROCSmatch = $QIPPROCSLine | Select-String -Pattern 'IPPROCS\('
+        IF ($QIPPROCSmatch)
+        {
+          $Splitter = "IPPROCS"
+          $QIPPROCSSplit = $QIPPROCSLine -Split $Splitter
+          $QIPPROCS = $QIPPROCSSplit[1]
+          $QIPPROCS = $QIPPROCS -Replace "[()]",""
+          $QIPPROCS = $QIPPROCS.Trim()
+		  [int]$IPPROCS = $QIPPROCS
+          #Write-Host "QueueManagerName: ($QueueManagerName) QueueName:($QueueName) IPPROCS:($IPPROCS)"
+		  #$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nQueueManagerName:($QueueManagerName) `nQueueName:($QueueName) `nIPPROCS:($IPPROCS).")
+        }
+      }
+	  
+      #####Get the OPPROCS from each queue
+      $QOPPROCSCmd = "cmd /c 'echo Display Queue($QueueName) OPPROCS | runmqsc $QueueManagerName'"
+      #Write-Host "Getting OPPROCS using: "$QOPPROCSCmd
+      $QOPPROCSOut = Invoke-Expression $QOPPROCSCmd
+      FOREACH ($QOPPROCSLine in $QOPPROCSOut)
+      {
+        $QOPPROCSmatch = $QOPPROCSLine | Select-String -Pattern 'OPPROCS\('
+        IF ($QOPPROCSmatch)
+        {
+          $Splitter = "OPPROCS"
+          $QOPPROCSSplit = $QOPPROCSLine -Split $Splitter
+          $QOPPROCS = $QOPPROCSSplit[1]
+          $QOPPROCS = $QOPPROCS -Replace "[()]",""
+          $QOPPROCS = $QOPPROCS.Trim()
+		  [int]$OPPROCS = $QOPPROCS
+          #Write-Host "QueueManagerName: ($QueueManagerName) QueueName:($QueueName) OPPROCS:($OPPROCS)"
+		  #$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nQueueManagerName:($QueueManagerName) `nQueueName:($QueueName) `nOPPROCS:($OPPROCS).")
+        }
+      }	  
+
+      # Load PropertyBag function 
+      $bag = $momapi.CreatePropertyBag()
+      #Create PropertyBags
+      $bag.AddValue('QueueManagerName',$QueueManagerName)
+	  $bag.AddValue('QueueName',$QueueName)
+	  $bag.AddValue('QueueDepth',$QueueDepth)
+	  $bag.AddValue('IPPROCS',$IPPROCS)
+	  $bag.AddValue('OPPROCS',$OPPROCS)
+	  #Return each property bag as we create and populate it.
+	  $bag
+    }
+  }
+}
+#=================================================================================
+# End MAIN script section
+
+
+# End of script section
+#=================================================================================
+#Log an event for script ending and total execution time.
+$EndTime = Get-Date
+$ScriptTime = ($EndTime - $StartTime).TotalSeconds
+$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript Completed. `nRunning as ($whoami). `nScript Runtime: ($ScriptTime) seconds.")
+#=================================================================================
+# End of script
+                </ScriptBody>
+                <Parameters>
+                </Parameters>				
+                <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
+              </ProbeAction>
+            </MemberModules>
+            <Composition>
+              <Node ID="PA">
+                <Node ID="Scheduler" />
+              </Node>
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.PropertyBagData</OutputType>
+      </DataSourceModuleType>
+      <DataSourceModuleType ID="IBM.MQ.ListenerPerformance.Filtered.DS" Accessibility="Public" Batching="false">
+        <Configuration>
+		  <xsd:element minOccurs="1" type="xsd:integer" name="IntervalSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:integer" name="TimeoutSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:string" name="ListenerName" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:string" name="QueueManagerName" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />		  
+        </Configuration>
+        <OverrideableParameters>
+		  <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+		  <OverrideableParameter ID="TimeoutSeconds" Selector="$Config/TimeoutSeconds$" ParameterType="int" />
+        </OverrideableParameters>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <DataSource ID="DS" TypeID="IBM.MQ.ListenerPerformance.DS">
+                <IntervalSeconds>$Config/IntervalSeconds$</IntervalSeconds>
+                <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
+              </DataSource>
+              <ConditionDetection ID="Filter" TypeID="System!System.ExpressionFilter">
+                <Expression>
+					<And>
+					  <Expression>
+						<SimpleExpression>
+						  <ValueExpression>
+							<XPathQuery Type="String">Property[@Name='ListenerName']</XPathQuery>
+						  </ValueExpression>
+						  <Operator>Equal</Operator>
+						  <ValueExpression>
+							<Value Type="String">$Config/ListenerName$</Value>
+						  </ValueExpression>
+						</SimpleExpression>
+					  </Expression>
+					  <Expression>
+						<SimpleExpression>
+						  <ValueExpression>
+							<XPathQuery Type="String">Property[@Name='QueueManagerName']</XPathQuery>
+						  </ValueExpression>
+						  <Operator>Equal</Operator>
+						  <ValueExpression>
+							<Value Type="String">$Config/QueueManagerName$</Value>
+						  </ValueExpression>
+						</SimpleExpression>
+					  </Expression>
+					</And>
+		        </Expression>
+              </ConditionDetection>
+            </MemberModules>
+            <Composition>
+              <Node ID="Filter">
+                <Node ID="DS" />
+              </Node>
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.PropertyBagData</OutputType>
+      </DataSourceModuleType>	
+      <DataSourceModuleType ID="IBM.MQ.ListenerPerformance.DS" Accessibility="Internal" Batching="false">
+        <Configuration>
+		  <xsd:element minOccurs="1" type="xsd:integer" name="IntervalSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:integer" name="TimeoutSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />	
+        </Configuration>
+        <OverrideableParameters>
+		  <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+		  <OverrideableParameter ID="TimeoutSeconds" Selector="$Config/TimeoutSeconds$" ParameterType="int" />
+        </OverrideableParameters>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <DataSource ID="Scheduler" TypeID="System!System.Scheduler">
+                <Scheduler>
+                  <SimpleReccuringSchedule>
+                    <Interval Unit="Seconds">$Config/IntervalSeconds$</Interval>
+					<SpreadInitializationOverInterval Unit="Seconds">$Config/IntervalSeconds$</SpreadInitializationOverInterval>
+                  </SimpleReccuringSchedule>
+                  <ExcludeDates />
+                </Scheduler>
+              </DataSource>
+              <ProbeAction ID="PA" TypeID="Windows!Microsoft.Windows.PowerShellPropertyBagTriggerOnlyProbe">
+                <ScriptName>IBM.MQ.ListenerPerformance.DS.ps1</ScriptName>
+                <ScriptBody>
+#=================================================================================
+#  IBM MQ Listener Performance Script
+#  Outputs:  Sessions
+#
+#  Author:  Kevin Holman
+#  v1.0
+#=================================================================================
+
+
+# Manual Testing section - put stuff here for manually testing script - typically parameters:
+#=================================================================================
+#=================================================================================
+
+
+# Constants section - modify stuff here:
+#=================================================================================
+# Assign script name variable for use in event logging.  
+$ScriptName = "IBM.MQ.ListenerPerformance.DS.ps1"
+$EventID = "17004"
+#=================================================================================
+
+
+# Starting Script section - All scripts get this
+#=================================================================================
+# Gather the start time of the script
+$StartTime = Get-Date
+#Set variable to be used in logging events
+$whoami = whoami
+# Load MOMScript API
+$momapi = New-Object -comObject MOM.ScriptAPI
+#Log script event that we are starting task
+#$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript is starting. `nRunning as ($whoami).")
+#=================================================================================
+
+
+# Begin MAIN script section
+#=================================================================================
+#Get the Queue Managers
+$QMGRcmd = "dspmq"
+$QMGRcmdOut = Invoke-Expression $QMGRcmd
+FOREACH ($QMGRLine in $QMGRcmdOut)
+{
+  $QMGRLineSplit = $QMGRLine.Split("(,)")
+  [string]$QueueManagerName = $QMGRLineSplit[1]
+  #Write-Host "Found QM: ($QueueManagerName)"
+
+  #Get the Listeners from each QueueManager
+  $Lcmd = "cmd /c 'echo Display listener(*) | runmqsc $QueueManagerName'"
+
+  $Lout = Invoke-Expression $Lcmd
+  FOREACH ($LLine in $Lout)
+  {
+    $Lmatch = $LLine | Select-String -Pattern 'LISTENER\(' -CaseSensitive
+    IF ($Lmatch)
+    {
+      $LLineSplit = $LLine.Split("(,)")
+      [string]$ListenerName = $LLineSplit[1]
+
+      #Write-Host "Found Listener: ($ListenerName)"
+
+      #Get Listener Sessions
+      $LSessionsCmd = "cmd /c 'echo DISPLAY Listener($ListenerName) SESSIONS | runmqsc $QueueManagerName'"
+      $LSessionsOut = Invoke-Expression $LSessionsCmd
+
+      [int]$LSessionsValue = 0
+
+      FOREACH ($LSessionsLine in $LSessionsOut)
+      {
+        $LSessionsMatch = $LSessionsLine | Select-String -Pattern 'SESSIONS' -CaseSensitive
+        IF ($LSessionsMatch)
+        {
+          $Splitter = "SESSIONS"
+          $LSessionsLineSplit = $LSessionsLine -Split $Splitter
+          $LSessions = $LSessionsLineSplit[1]
+          $LSessions = $LSessions -Replace "[()]",""
+          $LSessionsValue = $LSessions.Trim()
+          Write-Host "LSessions: ($LSessionsValue)"
+
+          # Load PropertyBag function 
+          $bag = $momapi.CreatePropertyBag()
+
+          #Create PropertyBags
+	      $bag.AddValue('QueueManagerName',$QueueManagerName)
+	      $bag.AddValue('ListenerName',$ListenerName)
+	      $bag.AddValue('LSessionsValue',$LSessionsValue)
+	      #Return each property bag as we create and populate it.
+	      $bag
+        }
+      }
+    }
+  }
+}
+#=================================================================================
+# End MAIN script section
+
+
+# End of script section
+#=================================================================================
+#Log an event for script ending and total execution time.
+$EndTime = Get-Date
+$ScriptTime = ($EndTime - $StartTime).TotalSeconds
+$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript Completed. `nRunning as ($whoami). `nScript Runtime: ($ScriptTime) seconds.")
+#=================================================================================
+# End of script
+                </ScriptBody>
+                <Parameters>
+                </Parameters>				
+                <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
+              </ProbeAction>
+            </MemberModules>
+            <Composition>
+              <Node ID="PA">
+                <Node ID="Scheduler" />
+              </Node>
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.PropertyBagData</OutputType>
+      </DataSourceModuleType>	  
+      <DataSourceModuleType ID="IBM.MQ.ChannelStatus.Monitor.DS" Accessibility="Internal" Batching="false">
+        <Configuration>
+		  <xsd:element minOccurs="1" type="xsd:integer" name="IntervalSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:integer" name="TimeoutSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />	
+        </Configuration>
+        <OverrideableParameters>
+		  <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+		  <OverrideableParameter ID="TimeoutSeconds" Selector="$Config/TimeoutSeconds$" ParameterType="int" />
+        </OverrideableParameters>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <DataSource ID="Scheduler" TypeID="System!System.Scheduler">
+                <Scheduler>
+                  <SimpleReccuringSchedule>
+                    <Interval Unit="Seconds">$Config/IntervalSeconds$</Interval>
+					<SpreadInitializationOverInterval Unit="Seconds">$Config/IntervalSeconds$</SpreadInitializationOverInterval>
+                  </SimpleReccuringSchedule>
+                  <ExcludeDates />
+                </Scheduler>
+              </DataSource>
+              <ProbeAction ID="PA" TypeID="Windows!Microsoft.Windows.PowerShellPropertyBagTriggerOnlyProbe">
+                <ScriptName>IBM.MQ.ChannelStatus.Monitor.DS.ps1</ScriptName>
+                <ScriptBody>
+#=================================================================================
+#  IBM MQ Channel Status Script
+#
+#  Author:  Kevin Holman
+#  v1.0
+#=================================================================================
+
+
+# Manual Testing section - put stuff here for manually testing script - typically parameters:
+#=================================================================================
+#=================================================================================
+
+
+# Constants section - modify stuff here:
+#=================================================================================
+# Assign script name variable for use in event logging.  
+$ScriptName = "IBM.MQ.ChannelStatus.Monitor.DS.ps1"
+$EventID = "17001"
+#=================================================================================
+
+
+# Starting Script section - All scripts get this
+#=================================================================================
+# Gather the start time of the script
+$StartTime = Get-Date
+#Set variable to be used in logging events
+$whoami = whoami
+# Load MOMScript API
+$momapi = New-Object -comObject MOM.ScriptAPI
+#Log script event that we are starting task
+#$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript is starting. `nRunning as ($whoami).")
+#=================================================================================
+
+
+# Begin MAIN script section
+#=================================================================================
+#Get the Queue Managers
+$QMGRcmd = "dspmq"
+$QMGRcmdOut = Invoke-Expression $QMGRcmd
+FOREACH ($QMGRLine in $QMGRcmdOut)
+{
+  $QMGRLineSplit = $QMGRLine.Split("(,)")
+  [string]$QueueManagerName = $QMGRLineSplit[1]
+  #Write-Host "Found QM: ($QueueManagerName)"
+
+  #Get the Channels from each QueueManager
+  $Ccmd = "cmd /c 'echo Display channel(*) | runmqsc $QueueManagerName'"
+
+  $Cout = Invoke-Expression $Ccmd
+  FOREACH ($CLine in $Cout)
+  {
+    $Cmatch = $CLine | Select-String -Pattern 'CHANNEL\(' -CaseSensitive
+    IF ($Cmatch)
+    {
+      $CLineSplit = $CLine.Split("(,)")
+      [string]$ChannelName = $CLineSplit[1]
+
+      #Write-Host "Found Channel: ($ChannelName)"
+
+      #Get the channel status from ChannelName
+      $CStatusCmd = "cmd /c 'echo Display chs($ChannelName) | runmqsc $QueueManagerName'"
+
+      $CStatusOut = Invoke-Expression $CStatusCmd
+
+      FOREACH ($CStatusLine in $CStatusOut)
+      {
+        $CStatusMatch = $CStatusLine | Select-String -Pattern 'STATUS'
+        IF ($CStatusMatch)
+        {
+          $Splitter = "STATUS"
+          $CStatusLineSplit = $CStatusLine -Split $Splitter
+          $CStatus = $CStatusLineSplit[1]
+          $CStatus = $CStatus -Replace "[()]",""
+          $CStatus = $CStatus.Trim()
+          #Write-Host "CStatus: ($CStatus)"
+		  #$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nQueueManagerName:($QueueManagerName). `nChannelName:($ChannelName). `nChannelStatus:($CStatus).")
+
+          # Load PropertyBag function 
+          $bag = $momapi.CreatePropertyBag()
+          #Create PropertyBags
+	      $bag.AddValue('QueueManager',$QueueManagerName)
+	      $bag.AddValue('ChannelName',$ChannelName)
+	      $bag.AddValue('CStatus',$CStatus)
+	      #Return each property bag as we create and populate it.
+	      $bag
+        }
+      }
+    }
+  }
+}
+#=================================================================================
+# End MAIN script section
+
+
+# End of script section
+#=================================================================================
+#Log an event for script ending and total execution time.
+$EndTime = Get-Date
+$ScriptTime = ($EndTime - $StartTime).TotalSeconds
+$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript Completed. `nRunning as ($whoami). `nScript Runtime: ($ScriptTime) seconds.")
+#=================================================================================
+# End of script
+                </ScriptBody>
+                <Parameters>
+                </Parameters>				
+                <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
+              </ProbeAction>
+            </MemberModules>
+            <Composition>
+              <Node ID="PA">
+                <Node ID="Scheduler" />
+              </Node>
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.PropertyBagData</OutputType>
+      </DataSourceModuleType>
+      <DataSourceModuleType ID="IBM.MQ.ListenerStatus.Monitor.DS" Accessibility="Internal" Batching="false">
+        <Configuration>
+		  <xsd:element minOccurs="1" type="xsd:integer" name="IntervalSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:integer" name="TimeoutSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />	
+        </Configuration>
+        <OverrideableParameters>
+		  <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+		  <OverrideableParameter ID="TimeoutSeconds" Selector="$Config/TimeoutSeconds$" ParameterType="int" />
+        </OverrideableParameters>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <DataSource ID="Scheduler" TypeID="System!System.Scheduler">
+                <Scheduler>
+                  <SimpleReccuringSchedule>
+                    <Interval Unit="Seconds">$Config/IntervalSeconds$</Interval>
+					<SpreadInitializationOverInterval Unit="Seconds">$Config/IntervalSeconds$</SpreadInitializationOverInterval>
+                  </SimpleReccuringSchedule>
+                  <ExcludeDates />
+                </Scheduler>
+              </DataSource>
+              <ProbeAction ID="PA" TypeID="Windows!Microsoft.Windows.PowerShellPropertyBagTriggerOnlyProbe">
+                <ScriptName>IBM.MQ.ListenerStatus.Monitor.DS.ps1</ScriptName>
+                <ScriptBody>
+#=================================================================================
+#  IBM MQ Listener Status Script
+#
+#  Author:  Kevin Holman
+#  v1.0
+#=================================================================================
+
+
+# Manual Testing section - put stuff here for manually testing script - typically parameters:
+#=================================================================================
+#=================================================================================
+
+
+# Constants section - modify stuff here:
+#=================================================================================
+# Assign script name variable for use in event logging.  
+$ScriptName = "IBM.MQ.ListenerStatus.Monitor.DS.ps1"
+$EventID = "17002"
+#=================================================================================
+
+
+# Starting Script section - All scripts get this
+#=================================================================================
+# Gather the start time of the script
+$StartTime = Get-Date
+#Set variable to be used in logging events
+$whoami = whoami
+# Load MOMScript API
+$momapi = New-Object -comObject MOM.ScriptAPI
+#Log script event that we are starting task
+#$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript is starting. `nRunning as ($whoami).")
+#=================================================================================
+
+
+# Begin MAIN script section
+#=================================================================================
+#Get the Queue Managers
+$QMGRcmd = "dspmq"
+$QMGRcmdOut = Invoke-Expression $QMGRcmd
+FOREACH ($QMGRLine in $QMGRcmdOut)
+{
+  $QMGRLineSplit = $QMGRLine.Split("(,)")
+  [string]$QueueManagerName = $QMGRLineSplit[1]
+  #Write-Host "Found QM: ($QueueManagerName)"
+
+  #Get the Listeners from each QueueManager
+  $Lcmd = "cmd /c 'echo Display listener(*) | runmqsc $QueueManagerName'"
+
+  $Lout = Invoke-Expression $Lcmd
+  FOREACH ($LLine in $Lout)
+  {
+    $Lmatch = $LLine | Select-String -Pattern 'LISTENER\(' -CaseSensitive
+    IF ($Lmatch)
+    {
+      $LLineSplit = $LLine.Split("(,)")
+      [string]$ListenerName = $LLineSplit[1]
+
+      #Write-Host "Found Listener: ($ListenerName)"
+
+      #Get Listener Status
+      $LStatusCmd = "cmd /c 'echo DISPLAY lsstatus($ListenerName) | runmqsc $QueueManagerName'"
+      $LStatusOut = Invoke-Expression $LStatusCmd
+
+      FOREACH ($LStatusLine in $LStatusOut)
+      {
+        $LStatusMatch = $LStatusLine | Select-String -Pattern 'STATUS' -CaseSensitive
+        IF ($LStatusMatch)
+        {
+          $Splitter = "STATUS"
+          $LStatusLineSplit = $LStatusLine -Split $Splitter
+          $LStatus = $LStatusLineSplit[1]
+          $LStatus = $LStatus -Replace "[()]",""
+          $LStatus = $LStatus.Trim()
+          #Write-Host "LStatus: ($LStatus)"
+		  #$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nQueueManagerName:($QueueManagerName). `nListenerName:($ListenerName). `nListenerStatus:($LStatus).")
+
+          # Load PropertyBag function 
+          $bag = $momapi.CreatePropertyBag()
+          #Create PropertyBags
+	      $bag.AddValue('QueueManager',$QueueManagerName)
+	      $bag.AddValue('ListenerName',$ListenerName)
+	      $bag.AddValue('LStatus',$LStatus)
+	      #Return each property bag as we create and populate it.
+	      $bag
+        }
+      }
+    }
+  }
+}
+#=================================================================================
+# End MAIN script section
+
+
+# End of script section
+#=================================================================================
+#Log an event for script ending and total execution time.
+$EndTime = Get-Date
+$ScriptTime = ($EndTime - $StartTime).TotalSeconds
+$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript Completed. `nRunning as ($whoami). `nScript Runtime: ($ScriptTime) seconds.")
+#=================================================================================
+# End of script
+                </ScriptBody>
+                <Parameters>
+                </Parameters>				
+                <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
+              </ProbeAction>
+            </MemberModules>
+            <Composition>
+              <Node ID="PA">
+                <Node ID="Scheduler" />
+              </Node>
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.PropertyBagData</OutputType>
+      </DataSourceModuleType>
+      <DataSourceModuleType ID="IBM.MQ.QueueManagerStatus.Monitor.DS" Accessibility="Internal" Batching="false">
+        <Configuration>
+		  <xsd:element minOccurs="1" type="xsd:integer" name="IntervalSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:integer" name="TimeoutSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />	
+        </Configuration>
+        <OverrideableParameters>
+		  <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+		  <OverrideableParameter ID="TimeoutSeconds" Selector="$Config/TimeoutSeconds$" ParameterType="int" />
+        </OverrideableParameters>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <DataSource ID="Scheduler" TypeID="System!System.Scheduler">
+                <Scheduler>
+                  <SimpleReccuringSchedule>
+                    <Interval Unit="Seconds">$Config/IntervalSeconds$</Interval>
+					<SpreadInitializationOverInterval Unit="Seconds">$Config/IntervalSeconds$</SpreadInitializationOverInterval>
+                  </SimpleReccuringSchedule>
+                  <ExcludeDates />
+                </Scheduler>
+              </DataSource>
+              <ProbeAction ID="PA" TypeID="Windows!Microsoft.Windows.PowerShellPropertyBagTriggerOnlyProbe">
+                <ScriptName>IBM.MQ.QueueManagerStatus.Monitor.DS.ps1</ScriptName>
+                <ScriptBody>
+#=================================================================================
+#  IBM MQ Queue Manager Status Script
+#
+#  Author:  Kevin Holman
+#  v1.0
+#=================================================================================
+
+
+# Manual Testing section - put stuff here for manually testing script - typically parameters:
+#=================================================================================
+#=================================================================================
+
+
+# Constants section - modify stuff here:
+#=================================================================================
+# Assign script name variable for use in event logging.  
+$ScriptName = "IBM.MQ.QueueManagerStatus.Monitor.DS.ps1"
+$EventID = "17003"
+#=================================================================================
+
+
+# Starting Script section - All scripts get this
+#=================================================================================
+# Gather the start time of the script
+$StartTime = Get-Date
+#Set variable to be used in logging events
+$whoami = whoami
+# Load MOMScript API
+$momapi = New-Object -comObject MOM.ScriptAPI
+#Log script event that we are starting task
+#$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript is starting. `nRunning as ($whoami).")
+#=================================================================================
+
+
+# Begin MAIN script section
+#=================================================================================
+#Get the Queue Managers
+$QMGRcmd = "dspmq"
+$QMGRcmdOut = Invoke-Expression $QMGRcmd
+FOREACH ($QMGRLine in $QMGRcmdOut)
+{
+  $QMGRLineSplit = $QMGRLine.Split("(,)")
+  [string]$QueueManagerName = $QMGRLineSplit[1]
+  #Write-Host "Found QueueManagerName: ($QueueManagerName)"
+
+  $Splitter = "STATUS"
+  $QMGRLineSplit2 = $QMGRLine -Split $Splitter
+  $QMGRStatus = $QMGRLineSplit2[1]
+  $QMGRStatus = $QMGRStatus -Replace "[()]",""
+  $QMGRStatus = $QMGRStatus.Trim()
+  #Write-Host "QMGRStatus: ($QMGRStatus)"
+  #$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nQueueManagerName:($QueueManagerName). `nQMGRStatus:($QMGRStatus).")
+
+  # Load PropertyBag function 
+  $bag = $momapi.CreatePropertyBag()
+  #Create PropertyBags
+  $bag.AddValue('QueueManager',$QueueManagerName)
+  $bag.AddValue('QMGRStatus',$QMGRStatus)
+  #Return each property bag as we create and populate it.
+  $bag
+}
+#=================================================================================
+# End MAIN script section
+
+
+# End of script section
+#=================================================================================
+#Log an event for script ending and total execution time.
+$EndTime = Get-Date
+$ScriptTime = ($EndTime - $StartTime).TotalSeconds
+$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript Completed. `nRunning as ($whoami). `nScript Runtime: ($ScriptTime) seconds.")
+#=================================================================================
+# End of script
+                </ScriptBody>
+                <Parameters>
+                </Parameters>				
+                <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
+              </ProbeAction>
+            </MemberModules>
+            <Composition>
+              <Node ID="PA">
+                <Node ID="Scheduler" />
+              </Node>
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.PropertyBagData</OutputType>
+      </DataSourceModuleType>
+    </ModuleTypes>
+    <MonitorTypes>
+      <UnitMonitorType ID="IBM.MQ.QueueDepth.Monitor.MonitorType" Accessibility="Internal">
+        <MonitorTypeStates>
+          <MonitorTypeState ID="Error" NoDetection="false" />
+          <MonitorTypeState ID="Warning" NoDetection="false" />
+		  <MonitorTypeState ID="Success" NoDetection="false" />
+        </MonitorTypeStates>
+        <Configuration>
+          <xsd:element minOccurs="1" type="xsd:integer" name="IntervalSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" type="xsd:integer" name="TimeoutSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:string" name="QueueName" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:string" name="QueueManagerName" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:integer" name="WarningThreshold" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:integer" name="CriticalThreshold" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />		  
+        </Configuration>
+        <OverrideableParameters>
+		  <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+		  <OverrideableParameter ID="TimeoutSeconds" Selector="$Config/TimeoutSeconds$" ParameterType="int" />
+		  <OverrideableParameter ID="WarningThreshold" Selector="$Config/WarningThreshold$" ParameterType="int" />
+		  <OverrideableParameter ID="CriticalThreshold" Selector="$Config/CriticalThreshold$" ParameterType="int" />		  
+        </OverrideableParameters>
+        <MonitorImplementation>
+          <MemberModules>
+            <DataSource ID="DS" TypeID="IBM.MQ.QueuePerformance.Filtered.DS">
+			  <IntervalSeconds>$Config/IntervalSeconds$</IntervalSeconds>
+			  <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
+              <QueueName>$Config/QueueName$</QueueName>
+		      <QueueManagerName>$Config/QueueManagerName$</QueueManagerName>			  
+            </DataSource>
+            <ConditionDetection ID="HealthyCondition" TypeID="System!System.ExpressionFilter">
+			  <Expression>
+				<SimpleExpression>
+				  <ValueExpression>
+					<XPathQuery Type="Integer">Property[@Name='QueueDepth']</XPathQuery>
+				  </ValueExpression>
+				  <Operator>Less</Operator>
+				  <ValueExpression>
+					<Value Type="Integer">$Config/WarningThreshold$</Value>
+				  </ValueExpression>
+				</SimpleExpression>
+			  </Expression>
+            </ConditionDetection>
+            <ConditionDetection ID="WarningCondition" TypeID="System!System.ExpressionFilter">
+              <Expression>
+                <And>
+                  <Expression>
+                    <SimpleExpression>
+                      <ValueExpression>
+                        <XPathQuery Type="Integer">Property[@Name='QueueDepth']</XPathQuery>
+                      </ValueExpression>
+                      <Operator>GreaterEqual</Operator>
+                      <ValueExpression>
+                        <Value Type="Integer">$Config/WarningThreshold$</Value>
+                      </ValueExpression>
+                    </SimpleExpression>
+                  </Expression>
+                  <Expression>
+                    <SimpleExpression>
+                      <ValueExpression>
+                        <XPathQuery Type="Integer">Property[@Name='QueueDepth']</XPathQuery>
+                      </ValueExpression>
+                      <Operator>Less</Operator>
+                      <ValueExpression>
+                        <Value Type="Integer">$Config/CriticalThreshold$</Value>
+                      </ValueExpression>
+                    </SimpleExpression>
+                  </Expression>
+				</And>
+		      </Expression>				  
+            </ConditionDetection>			
+            <ConditionDetection ID="CriticalCondition" TypeID="System!System.ExpressionFilter">
+			  <Expression>
+				<SimpleExpression>
+				  <ValueExpression>
+					<XPathQuery Type="Integer">Property[@Name='QueueDepth']</XPathQuery>
+				  </ValueExpression>
+				  <Operator>GreaterEqual</Operator>
+				  <ValueExpression>
+					<Value Type="Integer">$Config/CriticalThreshold$</Value>
+				  </ValueExpression>
+				</SimpleExpression>
+			  </Expression>
+            </ConditionDetection>
+          </MemberModules>
+          <RegularDetections>
+            <RegularDetection MonitorTypeStateID="Error">
+              <Node ID="CriticalCondition">
+                <Node ID="DS" />
+              </Node>
+            </RegularDetection>
+            <RegularDetection MonitorTypeStateID="Success">
+              <Node ID="HealthyCondition">
+                <Node ID="DS" />
+              </Node>
+            </RegularDetection>
+            <RegularDetection MonitorTypeStateID="Warning">
+              <Node ID="WarningCondition">
+                <Node ID="DS" />
+              </Node>
+            </RegularDetection>
+          </RegularDetections>
+        </MonitorImplementation>
+      </UnitMonitorType>
+      <UnitMonitorType ID="IBM.MQ.QueueIPPROCS.Monitor.MonitorType" Accessibility="Internal">
+        <MonitorTypeStates>
+          <MonitorTypeState ID="Error" NoDetection="false" />
+		  <MonitorTypeState ID="Success" NoDetection="false" />
+        </MonitorTypeStates>
+        <Configuration>
+          <xsd:element minOccurs="1" type="xsd:integer" name="IntervalSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" type="xsd:integer" name="TimeoutSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:string" name="QueueName" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:string" name="QueueManagerName" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <OverrideableParameters>
+		  <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+		  <OverrideableParameter ID="TimeoutSeconds" Selector="$Config/TimeoutSeconds$" ParameterType="int" />
+        </OverrideableParameters>
+        <MonitorImplementation>
+          <MemberModules>
+            <DataSource ID="DS" TypeID="IBM.MQ.QueuePerformance.Filtered.DS">
+			  <IntervalSeconds>$Config/IntervalSeconds$</IntervalSeconds>
+			  <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
+              <QueueName>$Config/QueueName$</QueueName>
+		      <QueueManagerName>$Config/QueueManagerName$</QueueManagerName>
+            </DataSource>
+            <ConditionDetection ID="HealthyCondition" TypeID="System!System.ExpressionFilter">
+			  <Expression>
+				<SimpleExpression>
+				  <ValueExpression>
+					<XPathQuery Type="Integer">Property[@Name='IPPROCS']</XPathQuery>
+				  </ValueExpression>
+				  <Operator>Greater</Operator>
+				  <ValueExpression>
+					<Value Type="Integer">0</Value>
+				  </ValueExpression>
+				</SimpleExpression>
+			  </Expression>
+            </ConditionDetection>
+            <ConditionDetection ID="UnhealthyCondition" TypeID="System!System.ExpressionFilter">
+			  <Expression>
+				<SimpleExpression>
+				  <ValueExpression>
+					<XPathQuery Type="Integer">Property[@Name='IPPROCS']</XPathQuery>
+				  </ValueExpression>
+				  <Operator>Equal</Operator>
+				  <ValueExpression>
+					<Value Type="Integer">0</Value>
+				  </ValueExpression>
+				</SimpleExpression>
+			  </Expression>
+            </ConditionDetection>
+          </MemberModules>
+          <RegularDetections>
+            <RegularDetection MonitorTypeStateID="Error">
+              <Node ID="UnhealthyCondition">
+                <Node ID="DS" />
+              </Node>
+            </RegularDetection>
+            <RegularDetection MonitorTypeStateID="Success">
+              <Node ID="HealthyCondition">
+                <Node ID="DS" />
+              </Node>
+            </RegularDetection>
+          </RegularDetections>
+        </MonitorImplementation>
+      </UnitMonitorType>	  
+      <UnitMonitorType ID="IBM.MQ.ChannelStatus.Monitor.MonitorType" Accessibility="Internal">
+        <MonitorTypeStates>
+          <MonitorTypeState ID="Error" NoDetection="false" />
+		  <MonitorTypeState ID="Success" NoDetection="false" />
+        </MonitorTypeStates>
+        <Configuration>
+          <xsd:element minOccurs="1" type="xsd:integer" name="IntervalSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:string" name="ChannelName" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:string" name="QueueManagerName" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" type="xsd:integer" name="TimeoutSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <OverrideableParameters>
+		  <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+		  <OverrideableParameter ID="TimeoutSeconds" Selector="$Config/TimeoutSeconds$" ParameterType="int" />
+        </OverrideableParameters>
+        <MonitorImplementation>
+          <MemberModules>
+            <DataSource ID="DS" TypeID="IBM.MQ.ChannelStatus.Monitor.DS">
+			  <IntervalSeconds>$Config/IntervalSeconds$</IntervalSeconds>
+			  <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
+            </DataSource>
+            <ConditionDetection ID="HealthyCondition" TypeID="System!System.ExpressionFilter">
+              <Expression>
+				  <And>
+					  <Expression>			  
+						<Or>
+							<Expression>
+								<SimpleExpression>
+									<ValueExpression>
+										<XPathQuery Type="String">Property[@Name='CStatus']</XPathQuery>
+									</ValueExpression>
+									<Operator>Equal</Operator>
+									<ValueExpression>
+										<Value Type="String">RUNNING</Value>
+									</ValueExpression>
+								</SimpleExpression>
+							</Expression>
+							<Expression>
+								<SimpleExpression>
+									<ValueExpression>
+										<XPathQuery Type="String">Property[@Name='CStatus']</XPathQuery>
+									</ValueExpression>
+									<Operator>Equal</Operator>
+									<ValueExpression>
+										<Value Type="String">INACTIVE</Value>
+									</ValueExpression>
+								</SimpleExpression>
+							</Expression>
+							<Expression>
+								<SimpleExpression>
+									<ValueExpression>
+										<XPathQuery Type="String">Property[@Name='CStatus']</XPathQuery>
+									</ValueExpression>
+									<Operator>Equal</Operator>
+									<ValueExpression>
+										<Value Type="String">Not Available</Value>
+									</ValueExpression>
+								</SimpleExpression>
+							</Expression>
+						</Or>
+					  </Expression>
+					  <Expression>
+						<SimpleExpression>
+						  <ValueExpression>
+							<XPathQuery Type="String">Property[@Name='ChannelName']</XPathQuery>
+						  </ValueExpression>
+						  <Operator>Equal</Operator>
+						  <ValueExpression>
+							<Value Type="String">$Config/ChannelName$</Value>
+						  </ValueExpression>
+						</SimpleExpression>
+					  </Expression>
+					  <Expression>
+						<SimpleExpression>
+						  <ValueExpression>
+							<XPathQuery Type="String">Property[@Name='QueueManagerName']</XPathQuery>
+						  </ValueExpression>
+						  <Operator>Equal</Operator>
+						  <ValueExpression>
+							<Value Type="String">$Config/QueueManagerName$</Value>
+						  </ValueExpression>
+						</SimpleExpression>
+					  </Expression>
+				  </And>
+			  </Expression>			  
+            </ConditionDetection>
+            <ConditionDetection ID="UnhealthyCondition" TypeID="System!System.ExpressionFilter">
+              <Expression>
+				<And>
+					<Expression>
+						<SimpleExpression>
+							<ValueExpression>
+								<XPathQuery Type="String">Property[@Name='CStatus']</XPathQuery>
+							</ValueExpression>
+							<Operator>NotEqual</Operator>
+							<ValueExpression>
+								<Value Type="String">RUNNING</Value>
+							</ValueExpression>
+						</SimpleExpression>
+					</Expression>
+					<Expression>
+						<SimpleExpression>
+							<ValueExpression>
+								<XPathQuery Type="String">Property[@Name='CStatus']</XPathQuery>
+							</ValueExpression>
+							<Operator>NotEqual</Operator>
+							<ValueExpression>
+								<Value Type="String">INACTIVE</Value>
+							</ValueExpression>
+						</SimpleExpression>
+					</Expression>
+					<Expression>
+						<SimpleExpression>
+							<ValueExpression>
+								<XPathQuery Type="String">Property[@Name='CStatus']</XPathQuery>
+							</ValueExpression>
+							<Operator>NotEqual</Operator>
+							<ValueExpression>
+								<Value Type="String">Not Available</Value>
+							</ValueExpression>
+						</SimpleExpression>
+					</Expression>
+				  <Expression>
+					<SimpleExpression>
+					  <ValueExpression>
+						<XPathQuery Type="String">Property[@Name='ChannelName']</XPathQuery>
+					  </ValueExpression>
+					  <Operator>Equal</Operator>
+					  <ValueExpression>
+						<Value Type="String">$Config/ChannelName$</Value>
+					  </ValueExpression>
+					</SimpleExpression>
+				  </Expression>
+				  <Expression>
+					<SimpleExpression>
+					  <ValueExpression>
+						<XPathQuery Type="String">Property[@Name='QueueManagerName']</XPathQuery>
+					  </ValueExpression>
+					  <Operator>Equal</Operator>
+					  <ValueExpression>
+						<Value Type="String">$Config/QueueManagerName$</Value>
+					  </ValueExpression>
+					</SimpleExpression>
+				  </Expression>					
+				</And>
+		      </Expression>				  
+            </ConditionDetection>
+          </MemberModules>
+          <RegularDetections>
+            <RegularDetection MonitorTypeStateID="Error">
+              <Node ID="UnhealthyCondition">
+                <Node ID="DS" />
+              </Node>
+            </RegularDetection>
+            <RegularDetection MonitorTypeStateID="Success">
+              <Node ID="HealthyCondition">
+                <Node ID="DS" />
+              </Node>
+            </RegularDetection>
+          </RegularDetections>
+        </MonitorImplementation>
+      </UnitMonitorType>
+      <UnitMonitorType ID="IBM.MQ.ListenerStatus.Monitor.MonitorType" Accessibility="Internal">
+        <MonitorTypeStates>
+          <MonitorTypeState ID="Error" NoDetection="false" />
+		  <MonitorTypeState ID="Success" NoDetection="false" />
+        </MonitorTypeStates>
+        <Configuration>
+          <xsd:element minOccurs="1" type="xsd:integer" name="IntervalSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:string" name="ListenerName" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:string" name="QueueManagerName" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" type="xsd:integer" name="TimeoutSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <OverrideableParameters>
+		  <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+		  <OverrideableParameter ID="TimeoutSeconds" Selector="$Config/TimeoutSeconds$" ParameterType="int" />
+        </OverrideableParameters>
+        <MonitorImplementation>
+          <MemberModules>
+            <DataSource ID="DS" TypeID="IBM.MQ.ListenerStatus.Monitor.DS">
+			  <IntervalSeconds>$Config/IntervalSeconds$</IntervalSeconds>
+			  <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
+            </DataSource>
+            <ConditionDetection ID="HealthyCondition" TypeID="System!System.ExpressionFilter">
+              <Expression>
+				<And>
+				  <Expression>
+					<SimpleExpression>
+						<ValueExpression>
+							<XPathQuery Type="String">Property[@Name='LStatus']</XPathQuery>
+						</ValueExpression>
+						<Operator>Equal</Operator>
+						<ValueExpression>
+							<Value Type="String">RUNNING</Value>
+						</ValueExpression>
+					</SimpleExpression>
+				  </Expression>
+				  <Expression>
+					<SimpleExpression>
+					  <ValueExpression>
+						<XPathQuery Type="String">Property[@Name='ListenerName']</XPathQuery>
+					  </ValueExpression>
+					  <Operator>Equal</Operator>
+					  <ValueExpression>
+						<Value Type="String">$Config/ListenerName$</Value>
+					  </ValueExpression>
+					</SimpleExpression>
+				  </Expression>
+				  <Expression>
+					<SimpleExpression>
+					  <ValueExpression>
+						<XPathQuery Type="String">Property[@Name='QueueManagerName']</XPathQuery>
+					  </ValueExpression>
+					  <Operator>Equal</Operator>
+					  <ValueExpression>
+						<Value Type="String">$Config/QueueManagerName$</Value>
+					  </ValueExpression>
+					</SimpleExpression>
+				  </Expression>
+				</And>
+			  </Expression>			  
+            </ConditionDetection>
+            <ConditionDetection ID="UnhealthyCondition" TypeID="System!System.ExpressionFilter">
+              <Expression>
+				<And>
+				  <Expression>
+					<SimpleExpression>
+						<ValueExpression>
+							<XPathQuery Type="String">Property[@Name='LStatus']</XPathQuery>
+						</ValueExpression>
+						<Operator>NotEqual</Operator>
+						<ValueExpression>
+							<Value Type="String">RUNNING</Value>
+						</ValueExpression>
+					</SimpleExpression>
+				  </Expression>
+				  <Expression>
+					<SimpleExpression>
+					  <ValueExpression>
+						<XPathQuery Type="String">Property[@Name='ListenerName']</XPathQuery>
+					  </ValueExpression>
+					  <Operator>Equal</Operator>
+					  <ValueExpression>
+						<Value Type="String">$Config/ListenerName$</Value>
+					  </ValueExpression>
+					</SimpleExpression>
+				  </Expression>
+				  <Expression>
+					<SimpleExpression>
+					  <ValueExpression>
+						<XPathQuery Type="String">Property[@Name='QueueManagerName']</XPathQuery>
+					  </ValueExpression>
+					  <Operator>Equal</Operator>
+					  <ValueExpression>
+						<Value Type="String">$Config/QueueManagerName$</Value>
+					  </ValueExpression>
+					</SimpleExpression>
+				  </Expression>					
+				</And>
+		      </Expression>				  
+            </ConditionDetection>
+          </MemberModules>
+          <RegularDetections>
+            <RegularDetection MonitorTypeStateID="Error">
+              <Node ID="UnhealthyCondition">
+                <Node ID="DS" />
+              </Node>
+            </RegularDetection>
+            <RegularDetection MonitorTypeStateID="Success">
+              <Node ID="HealthyCondition">
+                <Node ID="DS" />
+              </Node>
+            </RegularDetection>
+          </RegularDetections>
+        </MonitorImplementation>
+      </UnitMonitorType>
+      <UnitMonitorType ID="IBM.MQ.QueueManagerStatus.Monitor.MonitorType" Accessibility="Internal">
+        <MonitorTypeStates>
+          <MonitorTypeState ID="Error" NoDetection="false" />
+		  <MonitorTypeState ID="Success" NoDetection="false" />
+        </MonitorTypeStates>
+        <Configuration>
+          <xsd:element minOccurs="1" type="xsd:integer" name="IntervalSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:string" name="QueueManagerName" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" type="xsd:integer" name="TimeoutSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <OverrideableParameters>
+		  <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+		  <OverrideableParameter ID="TimeoutSeconds" Selector="$Config/TimeoutSeconds$" ParameterType="int" />
+        </OverrideableParameters>
+        <MonitorImplementation>
+          <MemberModules>
+            <DataSource ID="DS" TypeID="IBM.MQ.QueueManagerStatus.Monitor.DS">
+			  <IntervalSeconds>$Config/IntervalSeconds$</IntervalSeconds>
+			  <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
+            </DataSource>
+            <ConditionDetection ID="HealthyCondition" TypeID="System!System.ExpressionFilter">
+              <Expression>
+				<And>
+				  <Expression>
+					<SimpleExpression>
+						<ValueExpression>
+							<XPathQuery Type="String">Property[@Name='QMGRStatus']</XPathQuery>
+						</ValueExpression>
+						<Operator>Equal</Operator>
+						<ValueExpression>
+							<Value Type="String">Running</Value>
+						</ValueExpression>
+					</SimpleExpression>
+				  </Expression>
+				  <Expression>
+					<SimpleExpression>
+					  <ValueExpression>
+						<XPathQuery Type="String">Property[@Name='QueueManagerName']</XPathQuery>
+					  </ValueExpression>
+					  <Operator>Equal</Operator>
+					  <ValueExpression>
+						<Value Type="String">$Config/QueueManagerName$</Value>
+					  </ValueExpression>
+					</SimpleExpression>
+				  </Expression>
+				</And>
+			  </Expression>			  
+            </ConditionDetection>
+            <ConditionDetection ID="UnhealthyCondition" TypeID="System!System.ExpressionFilter">
+              <Expression>
+				<And>
+				  <Expression>
+					<SimpleExpression>
+						<ValueExpression>
+							<XPathQuery Type="String">Property[@Name='QMGRStatus']</XPathQuery>
+						</ValueExpression>
+						<Operator>NotEqual</Operator>
+						<ValueExpression>
+							<Value Type="String">Running</Value>
+						</ValueExpression>
+					</SimpleExpression>
+				  </Expression>
+				  <Expression>
+					<SimpleExpression>
+					  <ValueExpression>
+						<XPathQuery Type="String">Property[@Name='QueueManagerName']</XPathQuery>
+					  </ValueExpression>
+					  <Operator>Equal</Operator>
+					  <ValueExpression>
+						<Value Type="String">$Config/QueueManagerName$</Value>
+					  </ValueExpression>
+					</SimpleExpression>
+				  </Expression>					
+				</And>
+		      </Expression>				  
+            </ConditionDetection>
+          </MemberModules>
+          <RegularDetections>
+            <RegularDetection MonitorTypeStateID="Error">
+              <Node ID="UnhealthyCondition">
+                <Node ID="DS" />
+              </Node>
+            </RegularDetection>
+            <RegularDetection MonitorTypeStateID="Success">
+              <Node ID="HealthyCondition">
+                <Node ID="DS" />
+              </Node>
+            </RegularDetection>
+          </RegularDetections>
+        </MonitorImplementation>
+      </UnitMonitorType>	  
+    </MonitorTypes>	
+	</TypeDefinitions>
+	<Monitoring>
+		<Discoveries>
+			<Discovery ID="IBM.MQ.Channel.Discovery" Enabled="true" Target="IBM.MQ.QueueManager" ConfirmDelivery="false" Remotable="true" Priority="Normal">
+				<Category>Discovery</Category>
+				<DiscoveryTypes>
+					<DiscoveryClass TypeID="IBM.MQ.Channel">
+						<Property TypeID="IBM.MQ.Channel" PropertyID="ChannelName" />
+						<Property TypeID="IBM.MQ.Channel" PropertyID="QueueManagerName" />
+					</DiscoveryClass>
+				</DiscoveryTypes>
+				<DataSource ID="DS" TypeID="Windows!Microsoft.Windows.TimedPowerShell.DiscoveryProvider">
+				  <IntervalSeconds>86405</IntervalSeconds>
+				  <SyncTime />
+				  <ScriptName>IBM.MQ.Channel.Discovery.ps1</ScriptName>
+				  <ScriptBody>
+#=================================================================================
+#  Discover IBM MQ Channel Discovery
+#
+#  Author: Kevin Holman
+#  v1.0
+#=================================================================================
+param($SourceId,$ManagedEntityId,[string]$ComputerName,[string]$QueueManagerName)
+
+
+# Manual Testing section - put stuff here for manually testing script - typically parameters:
+#=================================================================================
+# $SourceId = '{00000000-0000-0000-0000-000000000000}'
+# $ManagedEntityId = '{00000000-0000-0000-0000-000000000000}'
+# $ComputerName = "computername.domain.com"
+# $QueueManagerName = "QM2"
+#=================================================================================
+
+
+# Constants section - modify stuff here:
+#=================================================================================
+# Assign script name variable for use in event logging.  
+# ScriptName should be the same as the ID of the module that the script is contained in
+$ScriptName = "IBM.MQ.Channel.Discovery.ps1"
+$EventID = "7102"
+#=================================================================================
+
+
+# Starting Script section - All scripts get this
+#=================================================================================
+# Gather the start time of the script
+$StartTime = Get-Date
+#Set variable to be used in logging events
+$whoami = whoami
+# Load MOMScript API
+$momapi = New-Object -comObject MOM.ScriptAPI
+#Log script event that we are starting task
+$momapi.LogScriptEvent($ScriptName,$EventID,0,"`n Script is starting. `n Running as ($whoami).")
+#=================================================================================
+			
+
+# Discovery Script section - Discovery scripts get this
+#=================================================================================
+# Load SCOM Discovery module
+$DiscoveryData = $momapi.CreateDiscoveryData(0, $SourceId, $ManagedEntityId)
+#=================================================================================	
+
+
+# Begin MAIN script section
+#=================================================================================
+#Get the Channel from QueueManager
+$Ccmd = "cmd /c 'echo Display channel(*) | runmqsc $QueueManagerName'"
+
+$Cout = Invoke-Expression $Ccmd
+FOREACH ($CLine in $Cout)
+{
+  $Cmatch = $CLine | Select-String -Pattern 'CHANNEL\(' -CaseSensitive
+  IF ($Cmatch)
+  {
+    $CLineSplit = $CLine.Split("(,)")
+    [string]$ChannelName = $CLineSplit[1]
+
+    #Write-Host "Found Channel: ($ChannelName)"
+  
+    $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nDiscovering Channel: ($ChannelName) `nQueue Manager: ($QueueManagerName).")
+
+    $instance = $DiscoveryData.CreateClassInstance("$MPElement[Name='IBM.MQ.Channel']$")
+    $instance.AddProperty("$MPElement[Name='Windows!Microsoft.Windows.Computer']/PrincipalName$",$ComputerName)
+    $instance.AddProperty("$MPElement[Name='IBM.MQ.QueueManager']/QueueManagerName$",$QueueManagerName)
+    $instance.AddProperty("$MPElement[Name='IBM.MQ.Channel']/ChannelName$",$ChannelName)
+    $instance.AddProperty("$MPElement[Name='IBM.MQ.Channel']/QueueManagerName$",$QueueManagerName)	
+    $instance.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$", $ComputerName)
+    $DiscoveryData.AddInstance($instance)
+  }
+}
+
+# Return Discovery Items Normally           
+$DiscoveryData
+# Return Discovery Bag to the command line for testing (does not work from ISE)
+# $momapi.Return($DiscoveryData)
+#=================================================================================
+# End MAIN script section
+
+
+# End of script section
+#=================================================================================
+#Log an event for script ending and total execution time.
+$EndTime = Get-Date
+$ScriptTime = ($EndTime - $StartTime).TotalSeconds
+$momapi.LogScriptEvent($ScriptName,$EventID,0,"`n Script Completed. `n Script Runtime: ($ScriptTime) seconds.")
+#=================================================================================
+# End of script
+</ScriptBody>
+				  <Parameters>
+					<Parameter>
+					  <Name>SourceID</Name>
+					  <Value>$MPElement$</Value>
+					</Parameter>
+					<Parameter>
+					  <Name>ManagedEntityID</Name>
+					  <Value>$Target/Id$</Value>
+					</Parameter>
+					<Parameter>
+					  <Name>ComputerName</Name>
+					  <Value>$Target/Host/Host/Property[Type="Windows!Microsoft.Windows.Computer"]/PrincipalName$</Value>
+					</Parameter>
+					<Parameter>
+					  <Name>QueueManagerName</Name>
+					  <Value>$Target/Property[Type="IBM.MQ.QueueManager"]/QueueManagerName$</Value>
+					</Parameter>					
+				  </Parameters>
+				  <TimeoutSeconds>300</TimeoutSeconds>
+				</DataSource>				
+			</Discovery>
+			<Discovery ID="IBM.MQ.Listener.Discovery" Enabled="true" Target="IBM.MQ.QueueManager" ConfirmDelivery="false" Remotable="true" Priority="Normal">
+				<Category>Discovery</Category>
+				<DiscoveryTypes>
+					<DiscoveryClass TypeID="IBM.MQ.Listener">
+						<Property TypeID="IBM.MQ.Listener" PropertyID="ListenerName" />
+						<Property TypeID="IBM.MQ.Listener" PropertyID="QueueManagerName" />
+					</DiscoveryClass>
+				</DiscoveryTypes>
+				<DataSource ID="DS" TypeID="Windows!Microsoft.Windows.TimedPowerShell.DiscoveryProvider">
+				  <IntervalSeconds>86403</IntervalSeconds>
+				  <SyncTime />
+				  <ScriptName>IBM.MQ.Listener.Discovery.ps1</ScriptName>
+				  <ScriptBody>
+#=================================================================================
+#  Discover IBM MQ Queue Listener Discovery
+#
+#  Author: Kevin Holman
+#  v1.0
+#=================================================================================
+param($SourceId,$ManagedEntityId,[string]$ComputerName,[string]$QueueManagerName)
+
+
+# Manual Testing section - put stuff here for manually testing script - typically parameters:
+#=================================================================================
+# $SourceId = '{00000000-0000-0000-0000-000000000000}'
+# $ManagedEntityId = '{00000000-0000-0000-0000-000000000000}'
+# $ComputerName = "computername.domain.com"
+# $QueueManagerName = "QM2"
+#=================================================================================
+
+
+# Constants section - modify stuff here:
+#=================================================================================
+# Assign script name variable for use in event logging.  
+# ScriptName should be the same as the ID of the module that the script is contained in
+$ScriptName = "IBM.MQ.Listener.Discovery.ps1"
+$EventID = "7103"
+#=================================================================================
+
+
+# Starting Script section - All scripts get this
+#=================================================================================
+# Gather the start time of the script
+$StartTime = Get-Date
+#Set variable to be used in logging events
+$whoami = whoami
+# Load MOMScript API
+$momapi = New-Object -comObject MOM.ScriptAPI
+#Log script event that we are starting task
+$momapi.LogScriptEvent($ScriptName,$EventID,0,"`n Script is starting. `n Running as ($whoami).")
+#=================================================================================
+			
+
+# Discovery Script section - Discovery scripts get this
+#=================================================================================
+# Load SCOM Discovery module
+$DiscoveryData = $momapi.CreateDiscoveryData(0, $SourceId, $ManagedEntityId)
+#=================================================================================	
+
+
+# Begin MAIN script section
+#=================================================================================
+#Get the Listener from QueueManager
+$Lcmd = "cmd /c 'echo Display listener(*) | runmqsc $QueueManagerName'"
+
+$Lout = Invoke-Expression $Lcmd
+FOREACH ($LLine in $Lout)
+{
+  $Lmatch = $LLine | Select-String -Pattern 'LISTENER\(' -CaseSensitive
+  IF ($Lmatch)
+  {
+    $LLineSplit = $LLine.Split("(,)")
+    [string]$ListenerName = $LLineSplit[1]
+
+    #Write-Host "Found Listener: ($ListenerName)"
+  
+    $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nDiscovering Listener: ($ListenerName) `nQueue Manager: ($QueueManagerName).")
+
+    $instance = $DiscoveryData.CreateClassInstance("$MPElement[Name='IBM.MQ.Listener']$")
+    $instance.AddProperty("$MPElement[Name='Windows!Microsoft.Windows.Computer']/PrincipalName$",$ComputerName)
+    $instance.AddProperty("$MPElement[Name='IBM.MQ.QueueManager']/QueueManagerName$",$QueueManagerName)
+    $instance.AddProperty("$MPElement[Name='IBM.MQ.Listener']/ListenerName$",$ListenerName)
+    $instance.AddProperty("$MPElement[Name='IBM.MQ.Listener']/QueueManagerName$",$QueueManagerName)	
+    $instance.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$", $ComputerName)
+    $DiscoveryData.AddInstance($instance)
+  }
+}
+
+# Return Discovery Items Normally           
+$DiscoveryData
+# Return Discovery Bag to the command line for testing (does not work from ISE)
+# $momapi.Return($DiscoveryData)
+#=================================================================================
+# End MAIN script section
+
+
+# End of script section
+#=================================================================================
+#Log an event for script ending and total execution time.
+$EndTime = Get-Date
+$ScriptTime = ($EndTime - $StartTime).TotalSeconds
+$momapi.LogScriptEvent($ScriptName,$EventID,0,"`n Script Completed. `n Script Runtime: ($ScriptTime) seconds.")
+#=================================================================================
+# End of script
+</ScriptBody>
+				  <Parameters>
+					<Parameter>
+					  <Name>SourceID</Name>
+					  <Value>$MPElement$</Value>
+					</Parameter>
+					<Parameter>
+					  <Name>ManagedEntityID</Name>
+					  <Value>$Target/Id$</Value>
+					</Parameter>
+					<Parameter>
+					  <Name>ComputerName</Name>
+					  <Value>$Target/Host/Host/Property[Type="Windows!Microsoft.Windows.Computer"]/PrincipalName$</Value>
+					</Parameter>
+					<Parameter>
+					  <Name>QueueManagerName</Name>
+					  <Value>$Target/Property[Type="IBM.MQ.QueueManager"]/QueueManagerName$</Value>
+					</Parameter>					
+				  </Parameters>
+				  <TimeoutSeconds>300</TimeoutSeconds>
+				</DataSource>				
+			</Discovery>
+			<Discovery ID="IBM.MQ.Queue.Discovery" Enabled="true" Target="IBM.MQ.QueueManager" ConfirmDelivery="false" Remotable="true" Priority="Normal">
+				<Category>Discovery</Category>
+				<DiscoveryTypes>
+					<DiscoveryClass TypeID="IBM.MQ.Queue">
+						<Property TypeID="IBM.MQ.Queue" PropertyID="QueueName" />
+						<Property TypeID="IBM.MQ.Queue" PropertyID="QueueManagerName" />
+						<Property TypeID="IBM.MQ.Queue" PropertyID="TYPE" />
+						<Property TypeID="IBM.MQ.Queue" PropertyID="DESCR" />
+						<Property TypeID="IBM.MQ.Queue" PropertyID="MAXDEPTH" />
+						<Property TypeID="IBM.MQ.Queue" PropertyID="MAXMSGL" />						
+					</DiscoveryClass>
+				</DiscoveryTypes>
+				<DataSource ID="DS" TypeID="Windows!Microsoft.Windows.TimedPowerShell.DiscoveryProvider">
+				  <IntervalSeconds>86401</IntervalSeconds>
+				  <SyncTime />
+				  <ScriptName>IBM.MQ.Queue.Discovery.ps1</ScriptName>
+				  <ScriptBody>
+#=================================================================================
+#  IBM MQ Queue Discovery Script
+#
+#  Author: Kevin Holman
+#  v1.3
+#=================================================================================
+param($SourceId,$ManagedEntityId,[string]$ComputerName,[string]$QueueManagerName)
+
+
+# Manual Testing section - put stuff here for manually testing script - typically parameters:
+#=================================================================================
+# $SourceId = '{00000000-0000-0000-0000-000000000000}'
+# $ManagedEntityId = '{00000000-0000-0000-0000-000000000000}'
+# $ComputerName = "computername.domain.com"
+# $QueueManagerName = "QM2"
+# $QueueName = "SYSTEM.INTERNAL.REPLY.QUEUE"
+#=================================================================================
+
+
+# Constants section - modify stuff here:
+#=================================================================================
+# Assign script name variable for use in event logging.  
+# ScriptName should be the same as the ID of the module that the script is contained in
+$ScriptName = "IBM.MQ.Queue.Discovery.ps1"
+$EventID = "7104"
+[bool]$DiscoverSystemQueues = $true
+#=================================================================================
+
+
+# Starting Script section - All scripts get this
+#=================================================================================
+# Gather the start time of the script
+$StartTime = Get-Date
+#Set variable to be used in logging events
+$whoami = whoami
+# Load MOMScript API
+$momapi = New-Object -comObject MOM.ScriptAPI
+#Log script event that we are starting task
+$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript is starting. `nRunning as ($whoami).")
+#=================================================================================
+			
+
+# Discovery Script section - Discovery scripts get this
+#=================================================================================
+# Load SCOM Discovery module
+$DiscoveryData = $momapi.CreateDiscoveryData(0, $SourceId, $ManagedEntityId)
+#=================================================================================	
+
+
+# Begin MAIN script section
+#=================================================================================
+  #Get the queues from QueueManager
+  $Qcmd = "cmd /c 'echo Display QL(*) | runmqsc $QueueManagerName'"
+  # Write-Host "Getting Queues from ($QueueManagerName) using $Qcmd"
+  $Qout = Invoke-Expression $Qcmd
+  
+  FOREACH ($QLine in $Qout)
+  {
+    $Qmatch = $QLine | Select-String -Pattern 'QUEUE\('
+    IF ($Qmatch)
+    {
+      $QLineSplit = $QLine.Split("(,)")
+      [string]$QueueName = $QLineSplit[1]
+      #Write-Host "Found Queue: ($QueueName)"
+
+      IF ($QueueName -match "SYSTEM.DEFAULT")
+      {
+        #This is a system default queue.  Only continue if System Default Queues should be discovered
+        IF ($DiscoverSystemQueues)
+        {$ContinueDiscovery = $true}
+        ELSE
+        {$ContinueDiscovery = $false}
+      }
+      ELSE
+      {
+        #This is not a system queue.  Continue discovery
+        $ContinueDiscovery = $true
+      }
+
+      IF ($ContinueDiscovery)
+      {
+        #Get Queue Properties
+        $QPropcmd = "cmd /c 'echo Display Queue ($QueueName) TYPE DESCR MAXDEPTH MAXMSGL | runmqsc $QueueManagerName'"
+        $QPropout = Invoke-Expression $QPropcmd
+
+        FOREACH ($QPropLine in $QPropout)
+        {
+          $QPropMatch = $QPropLine | Select-String -Pattern 'TYPE\('
+          IF ($QPropMatch)
+          {
+            $Splitter = "TYPE"
+            $QPropLine1 = $QPropLine
+            $QPropLineSplit1 = $QPropLine1 -Split $Splitter
+            $TYPE = $QPropLineSplit1[1]
+            $TYPE = ($TYPE.Split(")"))[0]
+            $TYPE = $TYPE -Replace "[(]",""
+            $TYPE = $TYPE.Trim()
+            #Write-Host "$TYPE"         
+          }
+
+          $QPropMatch2 = $QPropLine | Select-String -Pattern 'DESCR\('
+          IF ($QPropMatch2)
+          {
+            $QPropLine2 = $QPropLine
+            $Splitter = "DESCR"
+            $QPropLineSplit2 = $QPropLine2 -Split $Splitter
+            $DESCR = $QPropLineSplit2[1]
+            $DESCR = ($DESCR.Split(")"))[0]
+            $DESCR = $DESCR -Replace "[(]",""
+            $DESCR = $DESCR.Trim()
+            #Write-Host "$DESCR"         
+          }
+
+          $QPropMatch3 = $QPropLine | Select-String -Pattern 'MAXDEPTH\('
+          IF ($QPropMatch3)
+          {
+            $QPropLine3 = $QPropLine
+            $Splitter = "MAXDEPTH"
+            $QPropLineSplit3 = $QPropLine3 -Split $Splitter
+            $MAXDEPTH = $QPropLineSplit3[1]
+            $MAXDEPTH = ($MAXDEPTH.Split(")"))[0]
+            $MAXDEPTH = $MAXDEPTH -Replace "[(]",""
+            $MAXDEPTH = $MAXDEPTH.Trim()
+            #Write-Host "$MAXDEPTH"         
+          }
+
+          $QPropMatch4 = $QPropLine | Select-String -Pattern 'MAXMSGL\('
+          IF ($QPropMatch4)
+          {
+            $QPropLine4 = $QPropLine
+            $Splitter = "MAXMSGL"
+            $QPropLineSplit4 = $QPropLine4 -Split $Splitter
+            $MAXMSGL = $QPropLineSplit4[1]
+            $MAXMSGL = ($MAXMSGL.Split(")"))[0]
+            $MAXMSGL = $MAXMSGL -Replace "[(]",""
+            $MAXMSGL = $MAXMSGL.Trim()
+            #Write-Host "$MAXMSGL"         
+          }
+        }
+
+        $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nDiscovering Queue: ($QueueName) `nQueueManagerName: ($QueueManagerName). `nTYPE: ($TYPE). `nDESCR: ($DESCR). `nMAXDEPTH: ($MAXDEPTH). `nMAXMSGL: ($MAXMSGL)")
+
+        $instance = $DiscoveryData.CreateClassInstance("$MPElement[Name='IBM.MQ.Queue']$")
+        $instance.AddProperty("$MPElement[Name='Windows!Microsoft.Windows.Computer']/PrincipalName$",$ComputerName)
+        $instance.AddProperty("$MPElement[Name='IBM.MQ.QueueManager']/QueueManagerName$",$QueueManagerName)
+        $instance.AddProperty("$MPElement[Name='IBM.MQ.Queue']/QueueManagerName$",$QueueManagerName)
+        $instance.AddProperty("$MPElement[Name='IBM.MQ.Queue']/QueueName$",$QueueName)
+        $instance.AddProperty("$MPElement[Name='IBM.MQ.Queue']/TYPE$",$TYPE)
+        $instance.AddProperty("$MPElement[Name='IBM.MQ.Queue']/DESCR$",$DESCR)
+        $instance.AddProperty("$MPElement[Name='IBM.MQ.Queue']/MAXDEPTH$",$MAXDEPTH)
+        $instance.AddProperty("$MPElement[Name='IBM.MQ.Queue']/MAXMSGL$",$MAXMSGL)
+        $instance.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$", $ComputerName)
+        $DiscoveryData.AddInstance($instance)
+      }
+    }
+  }
+
+# Return Discovery Items Normally           
+$DiscoveryData
+# Return Discovery Bag to the command line for testing (does not work from ISE)
+# $momapi.Return($DiscoveryData)
+#=================================================================================
+# End MAIN script section
+
+
+# End of script section
+#=================================================================================
+#Log an event for script ending and total execution time.
+$EndTime = Get-Date
+$ScriptTime = ($EndTime - $StartTime).TotalSeconds
+$momapi.LogScriptEvent($ScriptName,$EventID,0,"`n Script Completed. `n Script Runtime: ($ScriptTime) seconds.")
+#=================================================================================
+# End of script				  
+</ScriptBody>
+				  <Parameters>
+					<Parameter>
+					  <Name>SourceID</Name>
+					  <Value>$MPElement$</Value>
+					</Parameter>
+					<Parameter>
+					  <Name>ManagedEntityID</Name>
+					  <Value>$Target/Id$</Value>
+					</Parameter>
+					<Parameter>
+					  <Name>ComputerName</Name>
+					  <Value>$Target/Host/Host/Property[Type="Windows!Microsoft.Windows.Computer"]/PrincipalName$</Value>
+					</Parameter>
+					<Parameter>
+					  <Name>QueueManagerName</Name>
+					  <Value>$Target/Property[Type="IBM.MQ.QueueManager"]/QueueManagerName$</Value>
+					</Parameter>					
+				  </Parameters>
+				  <TimeoutSeconds>300</TimeoutSeconds>
+				</DataSource>				
+			</Discovery>			
+			<Discovery ID="IBM.MQ.QueueManager.Discovery" Enabled="true" Target="IBM.MQ.Server" ConfirmDelivery="false" Remotable="true" Priority="Normal">
+				<Category>Discovery</Category>
+				<DiscoveryTypes>
+					<DiscoveryClass TypeID="IBM.MQ.QueueManager">
+						<Property TypeID="IBM.MQ.QueueManager" PropertyID="QueueManagerName" />
+					</DiscoveryClass>
+				</DiscoveryTypes>
+				<DataSource ID="DS" TypeID="Windows!Microsoft.Windows.TimedPowerShell.DiscoveryProvider">
+				  <IntervalSeconds>86400</IntervalSeconds>
+				  <SyncTime />
+				  <ScriptName>IBM.MQ.QueueManager.Discovery.ps1</ScriptName>
+				  <ScriptBody>
+#=================================================================================
+#  Discover IBM MQ QueueManager
+#
+#  Author: Kevin Holman
+#  v1.0
+#=================================================================================
+param($SourceId,$ManagedEntityId,$ComputerName)
+
+
+# Manual Testing section - put stuff here for manually testing script - typically parameters:
+#=================================================================================
+# $SourceId = '{00000000-0000-0000-0000-000000000000}'
+# $ManagedEntityId = '{00000000-0000-0000-0000-000000000000}'
+# $ComputerName = "computername.domain.com"
+#=================================================================================
+
+
+# Constants section - modify stuff here:
+#=================================================================================
+# Assign script name variable for use in event logging.  
+# ScriptName should be the same as the ID of the module that the script is contained in
+$ScriptName = "IBM.MQ.QueueManager.Discovery.ps1"
+$EventID = "7101"
+#=================================================================================
+
+
+# Starting Script section - All scripts get this
+#=================================================================================
+# Gather the start time of the script
+$StartTime = Get-Date
+#Set variable to be used in logging events
+$whoami = whoami
+# Load MOMScript API
+$momapi = New-Object -comObject MOM.ScriptAPI
+#Log script event that we are starting task
+$momapi.LogScriptEvent($ScriptName,$EventID,0,"`n Script is starting. `n Running as ($whoami).")
+#=================================================================================
+			
+
+# Discovery Script section - Discovery scripts get this
+#=================================================================================
+# Load SCOM Discovery module
+$DiscoveryData = $momapi.CreateDiscoveryData(0, $SourceId, $ManagedEntityId)
+#=================================================================================	
+
+
+# Begin MAIN script section
+#=================================================================================
+#Get the Queue Managers
+$QMGRcmd = "dspmq"
+$QMGRcmdOut = Invoke-Expression $QMGRcmd
+FOREACH ($QMGRLine in $QMGRcmdOut)
+{
+  $QMGRLineSplit = $QMGRLine.Split("(,)")
+  [string]$QM = $QMGRLineSplit[1]
+  $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nDiscovering Queue Manager: ($QM).")
+
+  $instance = $DiscoveryData.CreateClassInstance("$MPElement[Name='IBM.MQ.QueueManager']$")
+  $instance.AddProperty("$MPElement[Name='Windows!Microsoft.Windows.Computer']/PrincipalName$",$ComputerName)
+  $instance.AddProperty("$MPElement[Name='IBM.MQ.QueueManager']/QueueManagerName$",$QM)
+  $instance.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$", $ComputerName)
+  $DiscoveryData.AddInstance($instance)
+}
+
+# Return Discovery Items Normally           
+$DiscoveryData
+# Return Discovery Bag to the command line for testing (does not work from ISE)
+# $momapi.Return($DiscoveryData)
+#=================================================================================
+# End MAIN script section
+
+
+# End of script section
+#=================================================================================
+#Log an event for script ending and total execution time.
+$EndTime = Get-Date
+$ScriptTime = ($EndTime - $StartTime).TotalSeconds
+$momapi.LogScriptEvent($ScriptName,$EventID,0,"`n Script Completed. `n Script Runtime: ($ScriptTime) seconds.")
+#=================================================================================
+# End of script
+</ScriptBody>
+				  <Parameters>
+					<Parameter>
+					  <Name>SourceID</Name>
+					  <Value>$MPElement$</Value>
+					</Parameter>
+					<Parameter>
+					  <Name>ManagedEntityID</Name>
+					  <Value>$Target/Id$</Value>
+					</Parameter>
+					<Parameter>
+					  <Name>ComputerName</Name>
+					  <Value>$Target/Host/Property[Type="Windows!Microsoft.Windows.Computer"]/PrincipalName$</Value>
+					</Parameter>
+				  </Parameters>
+				  <TimeoutSeconds>300</TimeoutSeconds>
+				</DataSource>				
+			</Discovery>
+			<Discovery ID="IBM.MQ.Server.Discovery" Enabled="true" Target="Windows!Microsoft.Windows.Server.OperatingSystem" ConfirmDelivery="false" Remotable="true" Priority="Normal">
+				<Category>Discovery</Category>
+				<DiscoveryTypes>
+					<DiscoveryClass TypeID="IBM.MQ.Server">
+						<Property TypeID="IBM.MQ.Server" PropertyID="Version" />
+						<Property TypeID="IBM.MQ.Server" PropertyID="InstallPath" />
+					</DiscoveryClass>					
+				</DiscoveryTypes>
+				<DataSource ID="DS" TypeID="Windows!Microsoft.Windows.FilteredRegistryDiscoveryProvider">
+					<ComputerName>$Target/Host/Property[Type="Windows!Microsoft.Windows.Computer"]/NetworkName$</ComputerName>
+					<RegistryAttributeDefinitions>
+						<RegistryAttributeDefinition>
+							<AttributeName>MQ_ServiceExists</AttributeName>
+							<Path>SYSTEM\CurrentControlSet\Services\MQ_Installation1</Path>
+							<PathType>0</PathType>
+							<AttributeType>0</AttributeType>
+						</RegistryAttributeDefinition>
+						<RegistryAttributeDefinition>
+							<AttributeName>MQ_Version</AttributeName>
+							<Path>SOFTWARE\IBM\WebSphere MQ\Installation\Installation1\VRMF</Path>
+							<PathType>1</PathType>
+							<AttributeType>1</AttributeType>
+						</RegistryAttributeDefinition>
+						<RegistryAttributeDefinition>
+							<AttributeName>MQ_InstallPath</AttributeName>
+							<Path>SOFTWARE\IBM\WebSphere MQ\Installation\Installation1\FilePath</Path>
+							<PathType>1</PathType>
+							<AttributeType>1</AttributeType>
+						</RegistryAttributeDefinition>						
+					</RegistryAttributeDefinitions>
+					<Frequency>14400</Frequency>
+					<ClassId>$MPElement[Name="IBM.MQ.Server"]$</ClassId>
+					<InstanceSettings>
+						<Settings>
+							<Setting>
+								<Name>$MPElement[Name="Windows!Microsoft.Windows.Computer"]/PrincipalName$</Name>
+								<Value>$Target/Host/Property[Type="Windows!Microsoft.Windows.Computer"]/PrincipalName$</Value>
+							</Setting>
+							<Setting>
+								<Name>$MPElement[Name="System!System.Entity"]/DisplayName$</Name>
+								<Value>$Target/Host/Property[Type="Windows!Microsoft.Windows.Computer"]/PrincipalName$</Value>
+							</Setting>
+							<Setting>
+								<Name>$MPElement[Name="IBM.MQ.Server"]/Version$</Name>
+								<Value>$Data/Values/MQ_Version$</Value>
+							</Setting>
+							<Setting>
+								<Name>$MPElement[Name="IBM.MQ.Server"]/InstallPath$</Name>
+								<Value>$Data/Values/MQ_InstallPath$</Value>
+							</Setting>							
+						</Settings>
+					</InstanceSettings>
+					<Expression>
+						<SimpleExpression>
+							<ValueExpression>
+								<XPathQuery Type="Boolean">Values/MQ_ServiceExists</XPathQuery>
+							</ValueExpression>
+							<Operator>Equal</Operator>
+							<ValueExpression>
+								<Value Type="Boolean">true</Value>
+							</ValueExpression>
+						</SimpleExpression>
+					</Expression>
+				</DataSource>
+			</Discovery>
+		</Discoveries>
+		<Rules>
+		  <Rule ID="IBM.MQ.QueueDepth.PerformanceCollection.Rule" Enabled="true" Target="IBM.MQ.Queue" ConfirmDelivery="false" Remotable="true" Priority="Normal" DiscardLevel="100">
+			<Category>PerformanceCollection</Category>
+			<DataSources>
+			  <DataSource ID="DS" TypeID="IBM.MQ.QueuePerformance.Filtered.DS">
+				<IntervalSeconds>901</IntervalSeconds>
+				<TimeoutSeconds>300</TimeoutSeconds>
+				<QueueName>$Target/Property[Type="IBM.MQ.Queue"]/QueueName$</QueueName>
+				<QueueManagerName>$Target/Property[Type="IBM.MQ.Queue"]/QueueManagerName$</QueueManagerName>
+			  </DataSource>
+			</DataSources>
+			<ConditionDetection ID="System.Performance.DataGenericMapper" TypeID="Perf!System.Performance.DataGenericMapper">
+			  <ObjectName>IBMMQ</ObjectName>
+			  <CounterName>QueueDepth</CounterName>
+			  <InstanceName>$Data/Property[@Name='QueueManagerName']$_$Data/Property[@Name='QueueName']$</InstanceName>
+			  <Value>$Data/Property[@Name='QueueDepth']$</Value>
+			</ConditionDetection>
+			<WriteActions>
+			  <WriteAction ID="WriteToDB" TypeID="SC!Microsoft.SystemCenter.CollectPerformanceData" />  <!-- Can be optional - collect this data to the Operations Database.  -->
+			  <WriteAction ID="WriteToDW" TypeID="MSDL!Microsoft.SystemCenter.DataWarehouse.PublishPerformanceData" />  <!-- Can be optional - collect this data to the Data Warehouse Database -->
+			</WriteActions>
+		  </Rule>			
+		  <Rule ID="IBM.MQ.QueueIPPROCS.PerformanceCollection.Rule" Enabled="true" Target="IBM.MQ.Queue" ConfirmDelivery="false" Remotable="true" Priority="Normal" DiscardLevel="100">
+			<Category>PerformanceCollection</Category>
+			<DataSources>
+			  <DataSource ID="DS" TypeID="IBM.MQ.QueuePerformance.Filtered.DS">
+				<IntervalSeconds>901</IntervalSeconds>
+				<TimeoutSeconds>300</TimeoutSeconds>
+				<QueueName>$Target/Property[Type="IBM.MQ.Queue"]/QueueName$</QueueName>
+				<QueueManagerName>$Target/Property[Type="IBM.MQ.Queue"]/QueueManagerName$</QueueManagerName>
+			  </DataSource>
+			</DataSources>
+			<ConditionDetection ID="System.Performance.DataGenericMapper" TypeID="Perf!System.Performance.DataGenericMapper">
+			  <ObjectName>IBMMQ</ObjectName>
+			  <CounterName>IPPROCS</CounterName>
+			  <InstanceName>$Data/Property[@Name='QueueManagerName']$_$Data/Property[@Name='QueueName']$</InstanceName>
+			  <Value>$Data/Property[@Name='IPPROCS']$</Value>
+			</ConditionDetection>
+			<WriteActions>
+			  <WriteAction ID="WriteToDB" TypeID="SC!Microsoft.SystemCenter.CollectPerformanceData" />  <!-- Can be optional - collect this data to the Operations Database.  -->
+			  <WriteAction ID="WriteToDW" TypeID="MSDL!Microsoft.SystemCenter.DataWarehouse.PublishPerformanceData" />  <!-- Can be optional - collect this data to the Data Warehouse Database -->
+			</WriteActions>
+		  </Rule>
+		  <Rule ID="IBM.MQ.QueueOPPROCS.PerformanceCollection.Rule" Enabled="true" Target="IBM.MQ.Queue" ConfirmDelivery="false" Remotable="true" Priority="Normal" DiscardLevel="100">
+			<Category>PerformanceCollection</Category>
+			<DataSources>
+			  <DataSource ID="DS" TypeID="IBM.MQ.QueuePerformance.Filtered.DS">
+				<IntervalSeconds>901</IntervalSeconds>
+				<TimeoutSeconds>300</TimeoutSeconds>
+				<QueueName>$Target/Property[Type="IBM.MQ.Queue"]/QueueName$</QueueName>
+				<QueueManagerName>$Target/Property[Type="IBM.MQ.Queue"]/QueueManagerName$</QueueManagerName>
+			  </DataSource>
+			</DataSources>
+			<ConditionDetection ID="System.Performance.DataGenericMapper" TypeID="Perf!System.Performance.DataGenericMapper">
+			  <ObjectName>IBMMQ</ObjectName>
+			  <CounterName>OPPROCS</CounterName>
+			  <InstanceName>$Data/Property[@Name='QueueManagerName']$_$Data/Property[@Name='QueueName']$</InstanceName>
+			  <Value>$Data/Property[@Name='OPPROCS']$</Value>
+			</ConditionDetection>
+			<WriteActions>
+			  <WriteAction ID="WriteToDB" TypeID="SC!Microsoft.SystemCenter.CollectPerformanceData" />  <!-- Can be optional - collect this data to the Operations Database.  -->
+			  <WriteAction ID="WriteToDW" TypeID="MSDL!Microsoft.SystemCenter.DataWarehouse.PublishPerformanceData" />  <!-- Can be optional - collect this data to the Data Warehouse Database -->
+			</WriteActions>
+		  </Rule>
+		  <Rule ID="IBM.MQ.ListenerSessions.PerformanceCollection.Rule" Enabled="true" Target="IBM.MQ.Listener" ConfirmDelivery="false" Remotable="true" Priority="Normal" DiscardLevel="100">
+			<Category>PerformanceCollection</Category>
+			<DataSources>
+			  <DataSource ID="DS" TypeID="IBM.MQ.ListenerPerformance.Filtered.DS">
+				<IntervalSeconds>904</IntervalSeconds>
+				<TimeoutSeconds>300</TimeoutSeconds>
+				<ListenerName>$Target/Property[Type="IBM.MQ.Listener"]/ListenerName$</ListenerName>
+				<QueueManagerName>$Target/Property[Type="IBM.MQ.Listener"]/QueueManagerName$</QueueManagerName>
+			  </DataSource>
+			</DataSources>
+			<ConditionDetection ID="System.Performance.DataGenericMapper" TypeID="Perf!System.Performance.DataGenericMapper">
+			  <ObjectName>IBMMQ</ObjectName>
+			  <CounterName>Sessions</CounterName>
+			  <InstanceName>$Data/Property[@Name='QueueManagerName']$_$Data/Property[@Name='ListenerName']$</InstanceName>
+			  <Value>$Data/Property[@Name='LSessionsValue']$</Value>
+			</ConditionDetection>
+			<WriteActions>
+			  <WriteAction ID="WriteToDB" TypeID="SC!Microsoft.SystemCenter.CollectPerformanceData" />  <!-- Can be optional - collect this data to the Operations Database.  -->
+			  <WriteAction ID="WriteToDW" TypeID="MSDL!Microsoft.SystemCenter.DataWarehouse.PublishPerformanceData" />  <!-- Can be optional - collect this data to the Data Warehouse Database -->
+			</WriteActions>
+		  </Rule>
+		</Rules>
+		<Monitors>
+			<UnitMonitor ID="IBM.MQ.ChannelStatus.Monitor" Accessibility="Public" Enabled="true" Target="IBM.MQ.Channel" ParentMonitorID="Health!System.Health.AvailabilityState" Remotable="true" Priority="Normal" TypeID="IBM.MQ.ChannelStatus.Monitor.MonitorType" ConfirmDelivery="false">
+				<Category>AvailabilityHealth</Category>
+				<AlertSettings AlertMessage="IBM.MQ.ChannelStatus.Monitor.AlertMessage">
+					<AlertOnState>Error</AlertOnState>
+					<AutoResolve>true</AutoResolve>
+					<AlertPriority>Normal</AlertPriority>
+					<AlertSeverity>MatchMonitorHealth</AlertSeverity>
+					<AlertParameters>
+						<AlertParameter1>$Data/Context/Property[@Name="QueueManagerName"]$</AlertParameter1>
+						<AlertParameter2>$Data/Context/Property[@Name="ChannelName"]$</AlertParameter2>
+						<AlertParameter3>$Data/Context/Property[@Name="CStatus"]$</AlertParameter3>
+					</AlertParameters>
+				</AlertSettings>
+				<OperationalStates>
+					<OperationalState ID="Error" MonitorTypeStateID="Error" HealthState="Error" />
+					<OperationalState ID="Success" MonitorTypeStateID="Success" HealthState="Success" />
+				</OperationalStates>
+				<Configuration>
+					<IntervalSeconds>903</IntervalSeconds>
+                    <ChannelName>$Target/Property[Type="IBM.MQ.Channel"]/ChannelName$</ChannelName>
+					<QueueManagerName>$Target/Property[Type="IBM.MQ.Channel"]/QueueManagerName$</QueueManagerName>
+					<TimeoutSeconds>300</TimeoutSeconds>
+				</Configuration>
+			</UnitMonitor>			
+			<UnitMonitor ID="IBM.MQ.QueueDepth.Monitor" Accessibility="Public" Enabled="true" Target="IBM.MQ.Queue" ParentMonitorID="Health!System.Health.AvailabilityState" Remotable="true" Priority="Normal" TypeID="IBM.MQ.QueueDepth.Monitor.MonitorType" ConfirmDelivery="false">
+				<Category>AvailabilityHealth</Category>
+				<AlertSettings AlertMessage="IBM.MQ.QueueDepth.Monitor.AlertMessage">
+					<AlertOnState>Error</AlertOnState>
+					<AutoResolve>true</AutoResolve>
+					<AlertPriority>Normal</AlertPriority>
+					<AlertSeverity>MatchMonitorHealth</AlertSeverity>
+					<AlertParameters>
+						<AlertParameter1>$Data/Context/Property[@Name="QueueManagerName"]$</AlertParameter1>
+						<AlertParameter2>$Data/Context/Property[@Name="QueueName"]$</AlertParameter2>
+						<AlertParameter3>$Data/Context/Property[@Name="QueueDepth"]$</AlertParameter3>
+					</AlertParameters>
+				</AlertSettings>
+				<OperationalStates>
+					<OperationalState ID="Error" MonitorTypeStateID="Error" HealthState="Error" />
+					<OperationalState ID="Warning" MonitorTypeStateID="Warning" HealthState="Warning" />
+					<OperationalState ID="Success" MonitorTypeStateID="Success" HealthState="Success" />
+				</OperationalStates>
+				<Configuration>
+					<IntervalSeconds>901</IntervalSeconds>
+					<TimeoutSeconds>300</TimeoutSeconds>
+                    <QueueName>$Target/Property[Type="IBM.MQ.Queue"]/QueueName$</QueueName>
+					<QueueManagerName>$Target/Property[Type="IBM.MQ.Queue"]/QueueManagerName$</QueueManagerName>
+					<WarningThreshold>10</WarningThreshold>
+					<CriticalThreshold>50</CriticalThreshold>
+				</Configuration>
+			</UnitMonitor>
+			<UnitMonitor ID="IBM.MQ.ListenerStatus.Monitor" Accessibility="Public" Enabled="true" Target="IBM.MQ.Listener" ParentMonitorID="Health!System.Health.AvailabilityState" Remotable="true" Priority="Normal" TypeID="IBM.MQ.ListenerStatus.Monitor.MonitorType" ConfirmDelivery="false">
+				<Category>AvailabilityHealth</Category>
+				<AlertSettings AlertMessage="IBM.MQ.ListenerStatus.Monitor.AlertMessage">
+					<AlertOnState>Error</AlertOnState>
+					<AutoResolve>true</AutoResolve>
+					<AlertPriority>Normal</AlertPriority>
+					<AlertSeverity>MatchMonitorHealth</AlertSeverity>
+					<AlertParameters>
+						<AlertParameter1>$Data/Context/Property[@Name="QueueManagerName"]$</AlertParameter1>
+						<AlertParameter2>$Data/Context/Property[@Name="ListenerName"]$</AlertParameter2>
+						<AlertParameter3>$Data/Context/Property[@Name="LStatus"]$</AlertParameter3>
+					</AlertParameters>
+				</AlertSettings>
+				<OperationalStates>
+					<OperationalState ID="Error" MonitorTypeStateID="Error" HealthState="Error" />
+					<OperationalState ID="Success" MonitorTypeStateID="Success" HealthState="Success" />
+				</OperationalStates>
+				<Configuration>
+					<IntervalSeconds>902</IntervalSeconds>
+                    <ListenerName>$Target/Property[Type="IBM.MQ.Listener"]/ListenerName$</ListenerName>
+					<QueueManagerName>$Target/Property[Type="IBM.MQ.Listener"]/QueueManagerName$</QueueManagerName>
+					<TimeoutSeconds>300</TimeoutSeconds>
+				</Configuration>
+			</UnitMonitor>				
+			<UnitMonitor ID="IBM.MQ.MQ_Installation1.Service.Monitor" Accessibility="Public" Enabled="true" Target="IBM.MQ.Server" ParentMonitorID="Health!System.Health.AvailabilityState" Remotable="true" Priority="Normal" TypeID="Windows!Microsoft.Windows.CheckNTServiceStateMonitorType" ConfirmDelivery="false">
+				<Category>AvailabilityHealth</Category>
+				<AlertSettings AlertMessage="IBM.MQ.MQ_Installation1.Service.Monitor.AlertMessage">
+					<AlertOnState>Error</AlertOnState>
+					<AutoResolve>true</AutoResolve>
+					<AlertPriority>High</AlertPriority>
+					<AlertSeverity>Error</AlertSeverity>
+					<AlertParameters>
+						<AlertParameter1>$Target/Host/Property[Type="Windows!Microsoft.Windows.Computer"]/NetbiosComputerName$</AlertParameter1>
+					</AlertParameters>
+				</AlertSettings>
+				<OperationalStates>
+					<OperationalState ID="Running" MonitorTypeStateID="Running" HealthState="Success" />
+					<OperationalState ID="NotRunning" MonitorTypeStateID="NotRunning" HealthState="Error" />
+				</OperationalStates>
+				<Configuration>
+					<ComputerName />
+					<ServiceName>MQ_Installation1</ServiceName>
+					<CheckStartupType />
+				</Configuration>
+			</UnitMonitor>
+			<UnitMonitor ID="IBM.MQ.QueueIPPROCS.Monitor" Accessibility="Public" Enabled="true" Target="IBM.MQ.Queue" ParentMonitorID="Health!System.Health.AvailabilityState" Remotable="true" Priority="Normal" TypeID="IBM.MQ.QueueIPPROCS.Monitor.MonitorType" ConfirmDelivery="false">
+				<Category>AvailabilityHealth</Category>
+				<AlertSettings AlertMessage="IBM.MQ.QueueIPPROCS.Monitor.AlertMessage">
+					<AlertOnState>Error</AlertOnState>
+					<AutoResolve>true</AutoResolve>
+					<AlertPriority>Normal</AlertPriority>
+					<AlertSeverity>MatchMonitorHealth</AlertSeverity>
+					<AlertParameters>
+						<AlertParameter1>$Data/Context/Property[@Name="QueueManagerName"]$</AlertParameter1>
+						<AlertParameter2>$Data/Context/Property[@Name="QueueName"]$</AlertParameter2>
+						<AlertParameter3>$Data/Context/Property[@Name="IPPROCS"]$</AlertParameter3>
+					</AlertParameters>
+				</AlertSettings>
+				<OperationalStates>
+					<OperationalState ID="Error" MonitorTypeStateID="Error" HealthState="Error" />
+					<OperationalState ID="Success" MonitorTypeStateID="Success" HealthState="Success" />
+				</OperationalStates>
+				<Configuration>
+					<IntervalSeconds>901</IntervalSeconds>
+					<TimeoutSeconds>300</TimeoutSeconds>
+                    <QueueName>$Target/Property[Type="IBM.MQ.Queue"]/QueueName$</QueueName>
+					<QueueManagerName>$Target/Property[Type="IBM.MQ.Queue"]/QueueManagerName$</QueueManagerName>
+				</Configuration>
+			</UnitMonitor>			
+			<UnitMonitor ID="IBM.MQ.QueueManagerStatus.Monitor" Accessibility="Public" Enabled="true" Target="IBM.MQ.QueueManager" ParentMonitorID="Health!System.Health.AvailabilityState" Remotable="true" Priority="Normal" TypeID="IBM.MQ.QueueManagerStatus.Monitor.MonitorType" ConfirmDelivery="false">
+				<Category>AvailabilityHealth</Category>
+				<AlertSettings AlertMessage="IBM.MQ.QueueManagerStatus.Monitor.AlertMessage">
+					<AlertOnState>Error</AlertOnState>
+					<AutoResolve>true</AutoResolve>
+					<AlertPriority>Normal</AlertPriority>
+					<AlertSeverity>MatchMonitorHealth</AlertSeverity>
+					<AlertParameters>
+						<AlertParameter1>$Data/Context/Property[@Name="QueueManagerName"]$</AlertParameter1>
+						<AlertParameter2>$Data/Context/Property[@Name="QMGRStatus"]$</AlertParameter2>
+					</AlertParameters>
+				</AlertSettings>
+				<OperationalStates>
+					<OperationalState ID="Error" MonitorTypeStateID="Error" HealthState="Error" />
+					<OperationalState ID="Success" MonitorTypeStateID="Success" HealthState="Success" />
+				</OperationalStates>
+				<Configuration>
+					<IntervalSeconds>904</IntervalSeconds>
+					<QueueManagerName>$Target/Property[Type="IBM.MQ.QueueManager"]/QueueManagerName$</QueueManagerName>
+					<TimeoutSeconds>300</TimeoutSeconds>
+				</Configuration>
+			</UnitMonitor>			
+			<DependencyMonitor ID="IBM.MQ.QueueManagerChannels.DependencyRollup.Monitor" Accessibility="Public" Enabled="true" Target="IBM.MQ.QueueManager" ParentMonitorID="Health!System.Health.AvailabilityState" Remotable="true" Priority="Normal" RelationshipType="IBM.MQ.QueueManager.Hosts.Channel" MemberMonitor="Health!System.Health.AvailabilityState">
+				<Category>Custom</Category>
+				<Algorithm>WorstOf</Algorithm>
+				<MemberUnAvailable>Error</MemberUnAvailable>
+			</DependencyMonitor>
+			<DependencyMonitor ID="IBM.MQ.QueueManagerListeners.DependencyRollup.Monitor" Accessibility="Public" Enabled="true" Target="IBM.MQ.QueueManager" ParentMonitorID="Health!System.Health.AvailabilityState" Remotable="true" Priority="Normal" RelationshipType="IBM.MQ.QueueManager.Hosts.Listener" MemberMonitor="Health!System.Health.AvailabilityState">
+				<Category>Custom</Category>
+				<Algorithm>WorstOf</Algorithm>
+				<MemberUnAvailable>Error</MemberUnAvailable>
+			</DependencyMonitor>
+			<DependencyMonitor ID="IBM.MQ.QueueManagerQueues.DependencyRollup.Monitor" Accessibility="Public" Enabled="true" Target="IBM.MQ.QueueManager" ParentMonitorID="Health!System.Health.AvailabilityState" Remotable="true" Priority="Normal" RelationshipType="IBM.MQ.QueueManager.Hosts.Queue" MemberMonitor="Health!System.Health.AvailabilityState">
+				<Category>Custom</Category>
+				<Algorithm>WorstOf</Algorithm>
+				<MemberUnAvailable>Error</MemberUnAvailable>
+			</DependencyMonitor>
+			<DependencyMonitor ID="IBM.MQ.QueueManagerToServer.DependencyRollup.Monitor" Accessibility="Public" Enabled="true" Target="IBM.MQ.Server" ParentMonitorID="Health!System.Health.AvailabilityState" Remotable="true" Priority="Normal" RelationshipType="IBM.MQ.Server.Hosts.QueueManager" MemberMonitor="Health!System.Health.AvailabilityState">
+				<Category>Custom</Category>
+				<Algorithm>WorstOf</Algorithm>
+				<MemberUnAvailable>Error</MemberUnAvailable>
+			</DependencyMonitor>
+		</Monitors>
+	</Monitoring>
+	<Presentation>
+		<Views>
+			<View ID="IBM.MQ.Channel.State.View" Accessibility="Internal" Enabled="true" Target="IBM.MQ.Channel" TypeID="SC!Microsoft.SystemCenter.StateViewType" Visible="true">
+				<Category>Custom</Category>
+				<Criteria />
+			</View>
+			<View ID="IBM.MQ.Listeners.Performance.View" Accessibility="Internal" Enabled="true" Target="IBM.MQ.Listener" TypeID="SC!Microsoft.SystemCenter.PerformanceViewType" Visible="true">
+				<Category>Custom</Category>
+				<Criteria />
+			</View>
+			<View ID="IBM.MQ.Listener.State.View" Accessibility="Internal" Enabled="true" Target="IBM.MQ.Listener" TypeID="SC!Microsoft.SystemCenter.StateViewType" Visible="true">
+				<Category>Custom</Category>
+				<Criteria />
+			</View>
+			<View ID="IBM.MQ.QueueManager.State.View" Accessibility="Internal" Enabled="true" Target="IBM.MQ.QueueManager" TypeID="SC!Microsoft.SystemCenter.StateViewType" Visible="true">
+				<Category>Custom</Category>
+				<Criteria />
+			</View>
+			<View ID="IBM.MQ.Queue.Performance.View" Accessibility="Internal" Enabled="true" Target="IBM.MQ.Queue" TypeID="SC!Microsoft.SystemCenter.PerformanceViewType" Visible="true">
+				<Category>Custom</Category>
+				<Criteria />
+			</View>
+			<View ID="IBM.MQ.Queue.State.View" Accessibility="Internal" Enabled="true" Target="IBM.MQ.Queue" TypeID="SC!Microsoft.SystemCenter.StateViewType" Visible="true">
+				<Category>Custom</Category>
+				<Criteria />
+			</View>
+			<View ID="IBM.MQ.Server.State.View" Accessibility="Internal" Enabled="true" Target="IBM.MQ.Server" TypeID="SC!Microsoft.SystemCenter.StateViewType" Visible="true">
+				<Category>Custom</Category>
+				<Criteria />
+			</View>
+			<View ID="IBM.MQ.Server.Alert.View" Accessibility="Internal" Enabled="true" Target="IBM.MQ.Server" TypeID="SC!Microsoft.SystemCenter.AlertViewType" Visible="true">
+				<Category>Custom</Category>
+				<Criteria>
+					<ResolutionState>
+						<StateRange Operator="NotEquals">255</StateRange>
+					</ResolutionState>
+				</Criteria>
+			</View>
+		</Views>
+		<Folders>
+			<Folder ID="IBM.MQ.Channel.Folder" Accessibility="Internal" ParentFolder="IBM.MQ.Root.Folder" />
+			<Folder ID="IBM.MQ.Root.Folder" Accessibility="Internal" ParentFolder="SC!Microsoft.SystemCenter.Monitoring.ViewFolder.Root" />
+			<Folder ID="IBM.MQ.Listener.Folder" Accessibility="Internal" ParentFolder="IBM.MQ.Root.Folder" />
+			<Folder ID="IBM.MQ.Queues.Folder" Accessibility="Internal" ParentFolder="IBM.MQ.Root.Folder" />
+		</Folders>
+		<FolderItems>
+			<FolderItem ElementID="IBM.MQ.Channel.State.View" ID="IBM.MQ.Channel.State.View.FolderItem" Folder="IBM.MQ.Channel.Folder" />
+			<FolderItem ElementID="IBM.MQ.Listeners.Performance.View" ID="IBM.MQ.Listeners.Performance.View.FolderItem" Folder="IBM.MQ.Listener.Folder" />
+			<FolderItem ElementID="IBM.MQ.Listener.State.View" ID="IBM.MQ.Listener.State.View.FolderItem" Folder="IBM.MQ.Listener.Folder" />
+			<FolderItem ElementID="IBM.MQ.QueueManager.State.View" ID="IBM.MQ.QueueManager.State.View.FolderItem" Folder="IBM.MQ.Root.Folder" />
+			<FolderItem ElementID="IBM.MQ.Queue.Performance.View" ID="IBM.MQ.Queue.Performance.View.FolderItem" Folder="IBM.MQ.Queues.Folder" />
+			<FolderItem ElementID="IBM.MQ.Queue.State.View" ID="IBM.MQ.Queue.State.View.FolderItem" Folder="IBM.MQ.Queues.Folder" />
+			<FolderItem ElementID="IBM.MQ.Server.State.View" ID="IBM.MQ.Server.State.View.FolderItem" Folder="IBM.MQ.Root.Folder" />
+			<FolderItem ElementID="IBM.MQ.Server.Alert.View" ID="IBM.MQ.Server.Alert.View.FolderItem" Folder="IBM.MQ.Root.Folder" />
+		</FolderItems>
+		<StringResources>
+			<StringResource ID="IBM.MQ.ChannelStatus.Monitor.AlertMessage" />
+			<StringResource ID="IBM.MQ.ListenerStatus.Monitor.AlertMessage" />
+			<StringResource ID="IBM.MQ.MQ_Installation1.Service.Monitor.AlertMessage" />
+			<StringResource ID="IBM.MQ.QueueManagerStatus.Monitor.AlertMessage" />
+			<StringResource ID="IBM.MQ.QueueDepth.Monitor.AlertMessage" />
+			<StringResource ID="IBM.MQ.QueueIPPROCS.Monitor.AlertMessage" />
+		</StringResources>
+	</Presentation>
+	<LanguagePacks>
+		<LanguagePack ID="ENU" IsDefault="true">
+			<DisplayStrings>
+				<DisplayString ElementID="IBM.MQ">
+					<Name>IBM MQ</Name>
+					<Description>IBM WebSphere MQ Management Pack</Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Channel">
+					<Name>Channel</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Channel.Discovery">
+					<Name>IBM MQ Channel Discovery</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Channel.Folder">
+					<Name>Channels</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Channel.State.View">
+					<Name>Channel State</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Channel" SubElementID="ChannelName">
+					<Name>Channel Name</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Channel" SubElementID="QueueManagerName">
+					<Name>Queue Manager Name</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.ChannelStatus.Monitor">
+					<Name>IBM MQ Channel Status Monitor</Name>
+					<Description></Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.ChannelStatus.Monitor.AlertMessage">
+					<Name>IBM MQ Channel Status Alert</Name>
+					<Description>IBM MQ Channel Status is not Running.
+Channel Status: {2}
+Channel Name: {1}
+Queue Manager Name: {0}</Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.ChannelStatus.Monitor" SubElementID="Error">
+					<Name>Not Running</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.ChannelStatus.Monitor" SubElementID="Success">
+					<Name>Running or Inactive</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueueDepth.Monitor">
+					<Name>IBM MQ Queue Depth Monitor</Name>
+					<Description></Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueueDepth.Monitor.AlertMessage">
+					<Name>IBM MQ Queue Depth exceeds threshold</Name>
+					<Description>The current queue depth is above the threshold.
+Queue Depth: {2}
+Queue Name: {1}
+Queue Manager Name {0}</Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueueDepth.Monitor" SubElementID="Error">
+					<Name>Error</Name>
+					<Description>Error</Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueueDepth.Monitor" SubElementID="Success">
+					<Name>Success</Name>
+					<Description>Success</Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueueDepth.Monitor" SubElementID="Warning">
+					<Name>Warning</Name>
+					<Description>Warning</Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueueDepth.PerformanceCollection.Rule">
+					<Name>IBM MQ CurrentQueueDepth Performance Collection Rule</Name>
+					<Description></Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Listener">
+					<Name>Listener</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Listener.Discovery">
+					<Name>IBM MQ Listener Discovery</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Listener.Folder">
+					<Name>Listeners</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Listener.State.View">
+					<Name>Listener State</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Listener" SubElementID="ListenerName">
+					<Name>Listener Name</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Listener" SubElementID="QueueManagerName">
+					<Name>Queue Manager Name</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Listeners.Performance.View">
+					<Name>Listener Performance</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.ListenerSessions.PerformanceCollection.Rule">
+					<Name>IBM MQ Listener Sessions Performance Collection Rule</Name>
+					<Description>Collect number of sessions on Listener</Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.ListenerStatus.Monitor">
+					<Name>IBM MQ Listener Status Monitor</Name>
+					<Description></Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.ListenerStatus.Monitor.AlertMessage">
+					<Name>IBM MQ Listener Status is Not Running</Name>
+					<Description>IBM MQ Listener Status is not Running.
+Listener Status: {2}
+Listener Name: {1}
+Queue Manager Name: {0}</Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.ListenerStatus.Monitor" SubElementID="Error">
+					<Name>Not Running</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.ListenerStatus.Monitor" SubElementID="Success">
+					<Name>Running</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.MQ_Installation1.Service.Monitor">
+					<Name>IBM MQ MQ_Installation1 Service Monitor</Name>
+					<Description></Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.MQ_Installation1.Service.Monitor.AlertMessage">
+					<Name>IBM MQ MQ_Installation1 Service is not running</Name>
+					<Description>IBM WebSphere MQ (Installation1) Service Not running on server {0}.</Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.MQ_Installation1.Service.Monitor" SubElementID="NotRunning">
+					<Name>NotRunning</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.MQ_Installation1.Service.Monitor" SubElementID="Running">
+					<Name>Running</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Server.Alert.View">
+					<Name>Alerts</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Queue">
+					<Name>Queue</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Queue.Discovery">
+					<Name>IBM MQ Queue Discovery</Name>
+					<Description></Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueueIPPROCS.Monitor">
+					<Name>IBM MQ Queue IPPROCS Monitor</Name>
+					<Description></Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueueIPPROCS.Monitor" SubElementID="Error">
+					<Name>Error</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueueIPPROCS.Monitor" SubElementID="Success">
+					<Name>Success</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueueIPPROCS.Monitor.AlertMessage">
+					<Name>IBM MQ IPPROCS Monitor greater than zero</Name>
+					<Description>The current IPPROCS value is above the threshold.
+IPPROCS value: {2}
+Queue Name: {1}
+Queue Manager Name {0}</Description>
+                </DisplayString>			
+				<DisplayString ElementID="IBM.MQ.Queue.Performance.View">
+					<Name>Queue Performance</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Queue.State.View">
+					<Name>Queue State</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Queue" SubElementID="DESCR">
+					<Name>Description</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueueIPPROCS.PerformanceCollection.Rule">
+					<Name>IBM MQ QueueIPPROCS Performance Collection Rule</Name>
+					<Description>Number of Applications reading from this queue</Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueueManager">
+					<Name>Queue Manager</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueueManager.Discovery">
+					<Name>IBM MQ QueueManager Discovery</Name>
+					<Description></Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueueManager.State.View">
+					<Name>Queue Managers</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueueManagerChannels.DependencyRollup.Monitor">
+					<Name>IBM MQ Channels To QueueManager Dependency Rollup Monitor</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueueManagerListeners.DependencyRollup.Monitor">
+					<Name>IBM MQ Listeners To QueueManager Dependency Rollup Monitor</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueueManager" SubElementID="QueueManagerName">
+					<Name>Queue Manager Name</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueueManagerQueues.DependencyRollup.Monitor">
+					<Name>IBM MQ Queues To QueueManager Dependency Rollup Monitor"</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueueManagerStatus.Monitor">
+					<Name>IBM MQ QueueManager Status Monitor</Name>
+					<Description></Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueueManagerStatus.Monitor.AlertMessage">
+					<Name>IBM Queue Manager Status is Not Running</Name>
+					<Description>IBM Queue Manager Status is not Running.
+
+Status: {0}
+Queue Manager Name: {1}
+Host Name: {2}</Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueueManagerStatus.Monitor" SubElementID="Error">
+					<Name>Error</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueueManagerStatus.Monitor" SubElementID="Success">
+					<Name>Success</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueueManagerToServer.DependencyRollup.Monitor">
+					<Name>IBM MQ QueueManager To Server DependencyRollup Monitor</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Queue" SubElementID="MAXDEPTH">
+					<Name>MAXDEPTH</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Queue" SubElementID="MAXMSGL">
+					<Name>MAXMSGL</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueueOPPROCS.PerformanceCollection.Rule">
+					<Name>IBM MQ QueueOPPROCS Performance Collection Rule</Name>
+					<Description>Number of Applications writing on this queue</Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Queue" SubElementID="QueueManagerName">
+					<Name>Queue Manager Name</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Queue" SubElementID="QueueName">
+					<Name>Queue Name</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Queues.Folder">
+					<Name>Queues</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Queue" SubElementID="TYPE">
+					<Name>TYPE</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Root.Folder">
+					<Name>IBM MQ</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Server">
+					<Name>IBM MQ Server</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Server" SubElementID="Version">
+					<Name>Version</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Server" SubElementID="InstallPath">
+					<Name>InstallPath</Name>
+				</DisplayString>				
+				<DisplayString ElementID="IBM.MQ.Server.Discovery">
+					<Name>IBM MQ Server Discovery</Name>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Server.State.View">
+					<Name>MQ Server State</Name>
+				</DisplayString>
+			</DisplayStrings>
+		</LanguagePack>
+	</LanguagePacks>
+</ManagementPack>
