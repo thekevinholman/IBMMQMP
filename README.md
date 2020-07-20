@@ -4,6 +4,8 @@ Version 3.2.1.0
 
 Management Pack to discover and monitor IBM WebSphere MQ Servers on Windows
 
+https://kevinholman.com/2020/07/20/ibm-websphere-mq-scom-management-pack/
+
 Discovers and monitors:
 * MQ Server (Service Running)
 * Queue Managers (Status)
