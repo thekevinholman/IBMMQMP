@@ -3,7 +3,7 @@
 	<Manifest>
 		<Identity>
 			<ID>IBM.MQ</ID>
-			<Version>3.2.1.0</Version>
+			<Version>3.2.1.1</Version>
 		</Identity>
 		<Name>IBM.MQ</Name>
 		<References>
@@ -1475,7 +1475,7 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript Completed. `nRunning as 
 #  Discover IBM MQ Channel Discovery
 #
 #  Author: Kevin Holman
-#  v1.0
+#  v1.1
 #=================================================================================
 param($SourceId,$ManagedEntityId,[string]$ComputerName,[string]$QueueManagerName)
 
@@ -1541,7 +1541,7 @@ FOREACH ($CLine in $Cout)
     $instance.AddProperty("$MPElement[Name='IBM.MQ.QueueManager']/QueueManagerName$",$QueueManagerName)
     $instance.AddProperty("$MPElement[Name='IBM.MQ.Channel']/ChannelName$",$ChannelName)
     $instance.AddProperty("$MPElement[Name='IBM.MQ.Channel']/QueueManagerName$",$QueueManagerName)	
-    $instance.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$", $ComputerName)
+    $instance.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$", $ChannelName)
     $DiscoveryData.AddInstance($instance)
   }
 }
@@ -1601,7 +1601,7 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`n Script Completed. `n Script Ru
 #  Discover IBM MQ Queue Listener Discovery
 #
 #  Author: Kevin Holman
-#  v1.0
+#  v1.1
 #=================================================================================
 param($SourceId,$ManagedEntityId,[string]$ComputerName,[string]$QueueManagerName)
 
@@ -1667,7 +1667,7 @@ FOREACH ($LLine in $Lout)
     $instance.AddProperty("$MPElement[Name='IBM.MQ.QueueManager']/QueueManagerName$",$QueueManagerName)
     $instance.AddProperty("$MPElement[Name='IBM.MQ.Listener']/ListenerName$",$ListenerName)
     $instance.AddProperty("$MPElement[Name='IBM.MQ.Listener']/QueueManagerName$",$QueueManagerName)	
-    $instance.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$", $ComputerName)
+    $instance.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$",$ListenerName)
     $DiscoveryData.AddInstance($instance)
   }
 }
@@ -1731,7 +1731,7 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`n Script Completed. `n Script Ru
 #  IBM MQ Queue Discovery Script
 #
 #  Author: Kevin Holman
-#  v1.3
+#  v1.4
 #=================================================================================
 param($SourceId,$ManagedEntityId,[string]$ComputerName,[string]$QueueManagerName)
 
@@ -1792,9 +1792,9 @@ $DiscoveryData = $momapi.CreateDiscoveryData(0, $SourceId, $ManagedEntityId)
       [string]$QueueName = $QLineSplit[1]
       #Write-Host "Found Queue: ($QueueName)"
 
-      IF ($QueueName -match "SYSTEM.DEFAULT")
+      IF ($QueueName -match "SYSTEM.")
       {
-        #This is a system default queue.  Only continue if System Default Queues should be discovered
+        #This is a system queue.  Only continue if System Queues should be discovered
         IF ($DiscoverSystemQueues)
         {$ContinueDiscovery = $true}
         ELSE
@@ -1878,7 +1878,7 @@ $DiscoveryData = $momapi.CreateDiscoveryData(0, $SourceId, $ManagedEntityId)
         $instance.AddProperty("$MPElement[Name='IBM.MQ.Queue']/DESCR$",$DESCR)
         $instance.AddProperty("$MPElement[Name='IBM.MQ.Queue']/MAXDEPTH$",$MAXDEPTH)
         $instance.AddProperty("$MPElement[Name='IBM.MQ.Queue']/MAXMSGL$",$MAXMSGL)
-        $instance.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$", $ComputerName)
+        $instance.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$",$QueueName)
         $DiscoveryData.AddInstance($instance)
       }
     }
@@ -1938,7 +1938,7 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`n Script Completed. `n Script Ru
 #  Discover IBM MQ QueueManager
 #
 #  Author: Kevin Holman
-#  v1.0
+#  v1.1
 #=================================================================================
 param($SourceId,$ManagedEntityId,$ComputerName)
 
@@ -1988,13 +1988,13 @@ $QMGRcmdOut = Invoke-Expression $QMGRcmd
 FOREACH ($QMGRLine in $QMGRcmdOut)
 {
   $QMGRLineSplit = $QMGRLine.Split("(,)")
-  [string]$QM = $QMGRLineSplit[1]
-  $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nDiscovering Queue Manager: ($QM).")
+  [string]$QueueManagerName = $QMGRLineSplit[1]
+  $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nDiscovering Queue Manager: ($QueueManagerName).")
 
   $instance = $DiscoveryData.CreateClassInstance("$MPElement[Name='IBM.MQ.QueueManager']$")
   $instance.AddProperty("$MPElement[Name='Windows!Microsoft.Windows.Computer']/PrincipalName$",$ComputerName)
-  $instance.AddProperty("$MPElement[Name='IBM.MQ.QueueManager']/QueueManagerName$",$QM)
-  $instance.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$", $ComputerName)
+  $instance.AddProperty("$MPElement[Name='IBM.MQ.QueueManager']/QueueManagerName$",$QueueManagerName)
+  $instance.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$", $QueueManagerName)
   $DiscoveryData.AddInstance($instance)
 }
 
