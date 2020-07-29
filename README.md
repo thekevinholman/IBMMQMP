@@ -12,5 +12,6 @@ Discovers and monitors:
 * Listeners (Status, Sessions)
 * Channels (Status)
 
-3.2.1.0 - Original Release
-3.2.1.1 - Updated displayname properties on classes to match QueueManagerName, QueueName, ChannelName, ListenerName
+Version History:
+- 3.2.1.0 - Original Release
+- 3.2.1.1 - Updated displayname properties on classes to match QueueManagerName, QueueName, ChannelName, ListenerName
