@@ -1,6 +1,5 @@
 # IBM MQ SCOM Management Pack
 IBM MQ SCOM Management Pack
-Version 3.2.1.0
 
 Management Pack to discover and monitor IBM MQ Servers on Windows
 
@@ -12,3 +11,6 @@ Discovers and monitors:
 * Queues (Status, Queue Depth, IPROCS, OPROCS)
 * Listeners (Status, Sessions)
 * Channels (Status)
+
+3.2.1.0 - Original Release
+3.2.1.1 - Updated displayname properties on classes to match QueueManagerName, QueueName, ChannelName, ListenerName
