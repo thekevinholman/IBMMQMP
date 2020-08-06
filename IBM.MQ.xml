@@ -3,7 +3,7 @@
 	<Manifest>
 		<Identity>
 			<ID>IBM.MQ</ID>
-			<Version>3.2.1.1</Version>
+			<Version>3.2.1.2</Version>
 		</Identity>
 		<Name>IBM.MQ</Name>
 		<References>
@@ -171,7 +171,7 @@
 #  Outputs:  QueueDepth and IPPROCS
 #
 #  Author:  Kevin Holman
-#  v1.4
+#  v1.5
 #=================================================================================
 
 
@@ -216,7 +216,6 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
   $Qcmd = "cmd /c 'echo Display QL(*) | runmqsc $QueueManagerName'"
 
   # Write-Host "Getting Queues from ($QM) using $Qcmd"
-
   $Qout = Invoke-Expression $Qcmd
   FOREACH ($QLine in $Qout)
   {
@@ -226,66 +225,77 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
       $QLineSplit = $QLine.Split("(,)")
       [string]$QueueName = $QLineSplit[1]
       # Write-Host "Found Queue: ($QueueName)"
-      
-      #####Get the QueueDepth from each queue
-      $QDepthCmd = "cmd /c 'echo Display Queue($QueueName) CURDEPTH | runmqsc $QueueManagerName'"
-      #Write-Host "Getting QueueDepth using: "$QDepthCmd
-      $QDepthOut = Invoke-Expression $QDepthCmd
-      FOREACH ($QDLine in $QDepthOut)
+
+      #Get the Queue Properties from the Queue      
+      $QPropsCmd = "cmd /c 'echo Display Queue($QueueName) | runmqsc $QueueManagerName'"
+      $QPropsOut = Invoke-Expression $QPropsCmd
+      # Loop through each line of the Queue properties and pull out any interesting data for a propertybag
+      FOREACH ($QPropLine in $QPropsOut)
       {
-        $QDmatch = $QDLine | Select-String -Pattern 'CURDEPTH\('
+        #Get QueueDepth
+        $QDmatch = $QPropLine | Select-String -Pattern 'CURDEPTH\('
         IF ($QDMatch)
         {
           $Splitter = "CURDEPTH"
-          $QDLineSplit = $QDLine -Split $Splitter
+          $QDLineSplit = $QDMatch -Split $Splitter
           $QD = $QDLineSplit[1]
+          $QD = $QD.Substring(0, $QD.IndexOf(')'))
           $QD = $QD -Replace "[()]",""
           $QD = $QD.Trim()
 		  [int]$QueueDepth = $QD
           #Write-Host "QueueManagerName: ($QueueManagerName) QueueName:($QueueName) QueueDepth:($QueueDepth)"
 		  #$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nQueueManagerName:($QueueManagerName) `nQueueName:($QueueName) `nQueueDepth:($QueueDepth).")
         }
-      }
 
-      #####Get the IPPROCS from each queue
-      $QIPPROCSCmd = "cmd /c 'echo Display Queue($QueueName) IPPROCS | runmqsc $QueueManagerName'"
-      #Write-Host "Getting IPPROCS using: "$QIPPROCSCmd
-      $QIPPROCSOut = Invoke-Expression $QIPPROCSCmd
-      FOREACH ($QIPPROCSLine in $QIPPROCSOut)
-      {
-        $QIPPROCSmatch = $QIPPROCSLine | Select-String -Pattern 'IPPROCS\('
+        #Get IPPROCS
+        $QIPPROCSmatch = $QPropLine | Select-String -Pattern 'IPPROCS\('
         IF ($QIPPROCSmatch)
         {
           $Splitter = "IPPROCS"
-          $QIPPROCSSplit = $QIPPROCSLine -Split $Splitter
+          $QIPPROCSSplit = $QIPPROCSmatch -Split $Splitter
           $QIPPROCS = $QIPPROCSSplit[1]
+          $QIPPROCS = $QIPPROCS.Substring(0, $QIPPROCS.IndexOf(')'))
           $QIPPROCS = $QIPPROCS -Replace "[()]",""
           $QIPPROCS = $QIPPROCS.Trim()
 		  [int]$IPPROCS = $QIPPROCS
           #Write-Host "QueueManagerName: ($QueueManagerName) QueueName:($QueueName) IPPROCS:($IPPROCS)"
 		  #$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nQueueManagerName:($QueueManagerName) `nQueueName:($QueueName) `nIPPROCS:($IPPROCS).")
         }
-      }
-	  
-      #####Get the OPPROCS from each queue
-      $QOPPROCSCmd = "cmd /c 'echo Display Queue($QueueName) OPPROCS | runmqsc $QueueManagerName'"
-      #Write-Host "Getting OPPROCS using: "$QOPPROCSCmd
-      $QOPPROCSOut = Invoke-Expression $QOPPROCSCmd
-      FOREACH ($QOPPROCSLine in $QOPPROCSOut)
-      {
-        $QOPPROCSmatch = $QOPPROCSLine | Select-String -Pattern 'OPPROCS\('
+
+        #Get OPPROCS
+        $QOPPROCSmatch = $QPropLine | Select-String -Pattern 'OPPROCS\('
         IF ($QOPPROCSmatch)
         {
           $Splitter = "OPPROCS"
-          $QOPPROCSSplit = $QOPPROCSLine -Split $Splitter
+          $QOPPROCSSplit = $QOPPROCSmatch -Split $Splitter
           $QOPPROCS = $QOPPROCSSplit[1]
+          $QOPPROCS = $QOPPROCS.Substring(0, $QOPPROCS.IndexOf(')'))
           $QOPPROCS = $QOPPROCS -Replace "[()]",""
           $QOPPROCS = $QOPPROCS.Trim()
 		  [int]$OPPROCS = $QOPPROCS
           #Write-Host "QueueManagerName: ($QueueManagerName) QueueName:($QueueName) OPPROCS:($OPPROCS)"
 		  #$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nQueueManagerName:($QueueManagerName) `nQueueName:($QueueName) `nOPPROCS:($OPPROCS).")
         }
-      }	  
+
+        #Get Queue MAXDEPTH
+        $QMAXDEPTHmatch = $QPropLine | Select-String -Pattern 'MAXDEPTH\('
+        IF ($QMAXDEPTHmatch)
+        {
+          $Splitter = "MAXDEPTH"
+          $QMAXDEPTHSplit = $QMAXDEPTHmatch -Split $Splitter
+          $QMAXDEPTH = $QMAXDEPTHSplit[1]
+          $QMAXDEPTH = $QMAXDEPTH.Substring(0, $QMAXDEPTH.IndexOf(')'))
+          $QMAXDEPTH = $QMAXDEPTH -Replace "[()]",""
+          $QMAXDEPTH = $QMAXDEPTH.Trim()
+		  [int]$MAXDEPTH = $QMAXDEPTH
+          #Write-Host "QueueManagerName: ($QueueManagerName) QueueName:($QueueName) MAXDEPTH:($MAXDEPTH)"
+		  #$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nQueueManagerName:($QueueManagerName) `nQueueName:($QueueName) `nMAXDEPTH:($MAXDEPTH).")
+        }
+      }
+
+      #Get Queue Percent Used
+      [int]$QueuePercentUsed = ([Math]::Round(($QueueDepth / $MAXDEPTH),2)*100)
+      #Write-Host "QueueManagerName: ($QueueManagerName) QueueName:($QueueName) QueuePercentUsed:($QueuePercentUsed)"
 
       # Load PropertyBag function 
       $bag = $momapi.CreatePropertyBag()
@@ -293,6 +303,8 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
       $bag.AddValue('QueueManagerName',$QueueManagerName)
 	  $bag.AddValue('QueueName',$QueueName)
 	  $bag.AddValue('QueueDepth',$QueueDepth)
+	  $bag.AddValue('MAXDEPTH',$MAXDEPTH)
+	  $bag.AddValue('QueuePercentUsed',$QueuePercentUsed)
 	  $bag.AddValue('IPPROCS',$IPPROCS)
 	  $bag.AddValue('OPPROCS',$OPPROCS)
 	  #Return each property bag as we create and populate it.
@@ -1023,6 +1035,108 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript Completed. `nRunning as 
           </RegularDetections>
         </MonitorImplementation>
       </UnitMonitorType>
+      <UnitMonitorType ID="IBM.MQ.QueuePercentUsed.Monitor.MonitorType" Accessibility="Internal">
+        <MonitorTypeStates>
+          <MonitorTypeState ID="Error" NoDetection="false" />
+          <MonitorTypeState ID="Warning" NoDetection="false" />
+		  <MonitorTypeState ID="Success" NoDetection="false" />
+        </MonitorTypeStates>
+        <Configuration>
+          <xsd:element minOccurs="1" type="xsd:integer" name="IntervalSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" type="xsd:integer" name="TimeoutSeconds" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:string" name="QueueName" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:string" name="QueueManagerName" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:integer" name="WarningThreshold" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+		  <xsd:element minOccurs="1" type="xsd:integer" name="CriticalThreshold" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />		  
+        </Configuration>
+        <OverrideableParameters>
+		  <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+		  <OverrideableParameter ID="TimeoutSeconds" Selector="$Config/TimeoutSeconds$" ParameterType="int" />
+		  <OverrideableParameter ID="WarningThreshold" Selector="$Config/WarningThreshold$" ParameterType="int" />
+		  <OverrideableParameter ID="CriticalThreshold" Selector="$Config/CriticalThreshold$" ParameterType="int" />		  
+        </OverrideableParameters>
+        <MonitorImplementation>
+          <MemberModules>
+            <DataSource ID="DS" TypeID="IBM.MQ.QueuePerformance.Filtered.DS">
+			  <IntervalSeconds>$Config/IntervalSeconds$</IntervalSeconds>
+			  <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
+              <QueueName>$Config/QueueName$</QueueName>
+		      <QueueManagerName>$Config/QueueManagerName$</QueueManagerName>			  
+            </DataSource>
+            <ConditionDetection ID="HealthyCondition" TypeID="System!System.ExpressionFilter">
+			  <Expression>
+				<SimpleExpression>
+				  <ValueExpression>
+					<XPathQuery Type="Integer">Property[@Name='QueuePercentUsed']</XPathQuery>
+				  </ValueExpression>
+				  <Operator>Less</Operator>
+				  <ValueExpression>
+					<Value Type="Integer">$Config/WarningThreshold$</Value>
+				  </ValueExpression>
+				</SimpleExpression>
+			  </Expression>
+            </ConditionDetection>
+            <ConditionDetection ID="WarningCondition" TypeID="System!System.ExpressionFilter">
+              <Expression>
+                <And>
+                  <Expression>
+                    <SimpleExpression>
+                      <ValueExpression>
+                        <XPathQuery Type="Integer">Property[@Name='QueuePercentUsed']</XPathQuery>
+                      </ValueExpression>
+                      <Operator>GreaterEqual</Operator>
+                      <ValueExpression>
+                        <Value Type="Integer">$Config/WarningThreshold$</Value>
+                      </ValueExpression>
+                    </SimpleExpression>
+                  </Expression>
+                  <Expression>
+                    <SimpleExpression>
+                      <ValueExpression>
+                        <XPathQuery Type="Integer">Property[@Name='QueuePercentUsed']</XPathQuery>
+                      </ValueExpression>
+                      <Operator>Less</Operator>
+                      <ValueExpression>
+                        <Value Type="Integer">$Config/CriticalThreshold$</Value>
+                      </ValueExpression>
+                    </SimpleExpression>
+                  </Expression>
+				</And>
+		      </Expression>				  
+            </ConditionDetection>			
+            <ConditionDetection ID="CriticalCondition" TypeID="System!System.ExpressionFilter">
+			  <Expression>
+				<SimpleExpression>
+				  <ValueExpression>
+					<XPathQuery Type="Integer">Property[@Name='QueuePercentUsed']</XPathQuery>
+				  </ValueExpression>
+				  <Operator>GreaterEqual</Operator>
+				  <ValueExpression>
+					<Value Type="Integer">$Config/CriticalThreshold$</Value>
+				  </ValueExpression>
+				</SimpleExpression>
+			  </Expression>
+            </ConditionDetection>
+          </MemberModules>
+          <RegularDetections>
+            <RegularDetection MonitorTypeStateID="Error">
+              <Node ID="CriticalCondition">
+                <Node ID="DS" />
+              </Node>
+            </RegularDetection>
+            <RegularDetection MonitorTypeStateID="Success">
+              <Node ID="HealthyCondition">
+                <Node ID="DS" />
+              </Node>
+            </RegularDetection>
+            <RegularDetection MonitorTypeStateID="Warning">
+              <Node ID="WarningCondition">
+                <Node ID="DS" />
+              </Node>
+            </RegularDetection>
+          </RegularDetections>
+        </MonitorImplementation>
+      </UnitMonitorType>	  
       <UnitMonitorType ID="IBM.MQ.QueueIPPROCS.Monitor.MonitorType" Accessibility="Internal">
         <MonitorTypeStates>
           <MonitorTypeState ID="Error" NoDetection="false" />
@@ -2119,7 +2233,28 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`n Script Completed. `n Script Ru
 			  <WriteAction ID="WriteToDB" TypeID="SC!Microsoft.SystemCenter.CollectPerformanceData" />  <!-- Can be optional - collect this data to the Operations Database.  -->
 			  <WriteAction ID="WriteToDW" TypeID="MSDL!Microsoft.SystemCenter.DataWarehouse.PublishPerformanceData" />  <!-- Can be optional - collect this data to the Data Warehouse Database -->
 			</WriteActions>
-		  </Rule>			
+		  </Rule>
+		  <Rule ID="IBM.MQ.QueuePercentUsed.PerformanceCollection.Rule" Enabled="true" Target="IBM.MQ.Queue" ConfirmDelivery="false" Remotable="true" Priority="Normal" DiscardLevel="100">
+			<Category>PerformanceCollection</Category>
+			<DataSources>
+			  <DataSource ID="DS" TypeID="IBM.MQ.QueuePerformance.Filtered.DS">
+				<IntervalSeconds>901</IntervalSeconds>
+				<TimeoutSeconds>300</TimeoutSeconds>
+				<QueueName>$Target/Property[Type="IBM.MQ.Queue"]/QueueName$</QueueName>
+				<QueueManagerName>$Target/Property[Type="IBM.MQ.Queue"]/QueueManagerName$</QueueManagerName>
+			  </DataSource>
+			</DataSources>
+			<ConditionDetection ID="System.Performance.DataGenericMapper" TypeID="Perf!System.Performance.DataGenericMapper">
+			  <ObjectName>IBMMQ</ObjectName>
+			  <CounterName>QueuePercentUsed</CounterName>
+			  <InstanceName>$Data/Property[@Name='QueueManagerName']$_$Data/Property[@Name='QueueName']$</InstanceName>
+			  <Value>$Data/Property[@Name='QueuePercentUsed']$</Value>
+			</ConditionDetection>
+			<WriteActions>
+			  <WriteAction ID="WriteToDB" TypeID="SC!Microsoft.SystemCenter.CollectPerformanceData" />  <!-- Can be optional - collect this data to the Operations Database.  -->
+			  <WriteAction ID="WriteToDW" TypeID="MSDL!Microsoft.SystemCenter.DataWarehouse.PublishPerformanceData" />  <!-- Can be optional - collect this data to the Data Warehouse Database -->
+			</WriteActions>
+		  </Rule>		  
 		  <Rule ID="IBM.MQ.QueueIPPROCS.PerformanceCollection.Rule" Enabled="true" Target="IBM.MQ.Queue" ConfirmDelivery="false" Remotable="true" Priority="Normal" DiscardLevel="100">
 			<Category>PerformanceCollection</Category>
 			<DataSources>
@@ -2236,6 +2371,34 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`n Script Completed. `n Script Ru
 					<CriticalThreshold>50</CriticalThreshold>
 				</Configuration>
 			</UnitMonitor>
+			<UnitMonitor ID="IBM.MQ.QueuePercentUsed.Monitor" Accessibility="Public" Enabled="true" Target="IBM.MQ.Queue" ParentMonitorID="Health!System.Health.AvailabilityState" Remotable="true" Priority="Normal" TypeID="IBM.MQ.QueuePercentUsed.Monitor.MonitorType" ConfirmDelivery="false">
+				<Category>AvailabilityHealth</Category>
+				<AlertSettings AlertMessage="IBM.MQ.QueuePercentUsed.Monitor.AlertMessage">
+					<AlertOnState>Error</AlertOnState>
+					<AutoResolve>true</AutoResolve>
+					<AlertPriority>Normal</AlertPriority>
+					<AlertSeverity>MatchMonitorHealth</AlertSeverity>
+					<AlertParameters>
+						<AlertParameter1>$Data/Context/Property[@Name="QueueManagerName"]$</AlertParameter1>
+						<AlertParameter2>$Data/Context/Property[@Name="QueueName"]$</AlertParameter2>
+						<AlertParameter3>$Data/Context/Property[@Name="QueueDepth"]$</AlertParameter3>
+						<AlertParameter4>$Data/Context/Property[@Name="QueuePercentUsed"]$</AlertParameter4>						
+					</AlertParameters>
+				</AlertSettings>
+				<OperationalStates>
+					<OperationalState ID="Error" MonitorTypeStateID="Error" HealthState="Error" />
+					<OperationalState ID="Warning" MonitorTypeStateID="Warning" HealthState="Warning" />
+					<OperationalState ID="Success" MonitorTypeStateID="Success" HealthState="Success" />
+				</OperationalStates>
+				<Configuration>
+					<IntervalSeconds>901</IntervalSeconds>
+					<TimeoutSeconds>300</TimeoutSeconds>
+                    <QueueName>$Target/Property[Type="IBM.MQ.Queue"]/QueueName$</QueueName>
+					<QueueManagerName>$Target/Property[Type="IBM.MQ.Queue"]/QueueManagerName$</QueueManagerName>
+					<WarningThreshold>50</WarningThreshold>
+					<CriticalThreshold>75</CriticalThreshold>
+				</Configuration>
+			</UnitMonitor>			
 			<UnitMonitor ID="IBM.MQ.ListenerStatus.Monitor" Accessibility="Public" Enabled="true" Target="IBM.MQ.Listener" ParentMonitorID="Health!System.Health.AvailabilityState" Remotable="true" Priority="Normal" TypeID="IBM.MQ.ListenerStatus.Monitor.MonitorType" ConfirmDelivery="false">
 				<Category>AvailabilityHealth</Category>
 				<AlertSettings AlertMessage="IBM.MQ.ListenerStatus.Monitor.AlertMessage">
@@ -2410,6 +2573,7 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`n Script Completed. `n Script Ru
 			<StringResource ID="IBM.MQ.MQ_Installation1.Service.Monitor.AlertMessage" />
 			<StringResource ID="IBM.MQ.QueueManagerStatus.Monitor.AlertMessage" />
 			<StringResource ID="IBM.MQ.QueueDepth.Monitor.AlertMessage" />
+			<StringResource ID="IBM.MQ.QueuePercentUsed.Monitor.AlertMessage" />			
 			<StringResource ID="IBM.MQ.QueueIPPROCS.Monitor.AlertMessage" />
 		</StringResources>
 	</Presentation>
@@ -2482,6 +2646,34 @@ Queue Manager Name {0}</Description>
 					<Name>IBM MQ CurrentQueueDepth Performance Collection Rule</Name>
 					<Description></Description>
 				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueuePercentUsed.Monitor">
+					<Name>IBM MQ Queue Percent Used Monitor</Name>
+					<Description></Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueuePercentUsed.Monitor.AlertMessage">
+					<Name>IBM MQ Queue Percent Used exceeds threshold</Name>
+					<Description>The current queue percent used is above the threshold.
+Queue Percent Used: {3}
+Queue Depth: {2}
+Queue Name: {1}
+Queue Manager Name {0}</Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueuePercentUsed.Monitor" SubElementID="Error">
+					<Name>Error</Name>
+					<Description>Error</Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueuePercentUsed.Monitor" SubElementID="Success">
+					<Name>Success</Name>
+					<Description>Success</Description>
+				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.QueuePercentUsed.Monitor" SubElementID="Warning">
+					<Name>Warning</Name>
+					<Description>Warning</Description>
+				</DisplayString>				
+				<DisplayString ElementID="IBM.MQ.QueuePercentUsed.PerformanceCollection.Rule">
+					<Name>IBM MQ Queue Percent Used Performance Collection Rule</Name>
+					<Description></Description>
+				</DisplayString>				
 				<DisplayString ElementID="IBM.MQ.Listener">
 					<Name>Listener</Name>
 				</DisplayString>
