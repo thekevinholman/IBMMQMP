@@ -1,5 +1,8 @@
 # IBM MQ SCOM Management Pack 3.2.1.3
 
+## [Download Here][Download]
+
+[Download]: https://github.com/thekevinholman/IBMMQMP/releases/download/3.2.1.3/IBM.MQ.mp
 
 IBM MQ SCOM Management Pack
 
