@@ -3,7 +3,7 @@
 	<Manifest>
 		<Identity>
 			<ID>IBM.MQ</ID>
-			<Version>3.2.1.2</Version>
+			<Version>3.2.1.3</Version>
 		</Identity>
 		<Name>IBM.MQ</Name>
 		<References>
@@ -566,7 +566,7 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript Completed. `nRunning as 
 #  IBM MQ Channel Status Script
 #
 #  Author:  Kevin Holman
-#  v1.0
+#  v1.1
 #=================================================================================
 
 
@@ -622,13 +622,13 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
       #Write-Host "Found Channel: ($ChannelName)"
 
       #Get the channel status from ChannelName
-      $CStatusCmd = "cmd /c 'echo Display chs($ChannelName) | runmqsc $QueueManagerName'"
+      $CStatusCmd = "cmd /c `"echo Display chs('$ChannelName') | runmqsc $QueueManagerName`""
 
       $CStatusOut = Invoke-Expression $CStatusCmd
 
       FOREACH ($CStatusLine in $CStatusOut)
       {
-        $CStatusMatch = $CStatusLine | Select-String -Pattern 'STATUS'
+        $CStatusMatch = $CStatusLine | Select-String -Pattern 'STATUS' -CaseSensitive
         IF ($CStatusMatch)
         {
           $Splitter = "STATUS"
@@ -642,7 +642,7 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
           # Load PropertyBag function 
           $bag = $momapi.CreatePropertyBag()
           #Create PropertyBags
-	      $bag.AddValue('QueueManager',$QueueManagerName)
+	      $bag.AddValue('QueueManagerName',$QueueManagerName)
 	      $bag.AddValue('ChannelName',$ChannelName)
 	      $bag.AddValue('CStatus',$CStatus)
 	      #Return each property bag as we create and populate it.
@@ -782,7 +782,7 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
           # Load PropertyBag function 
           $bag = $momapi.CreatePropertyBag()
           #Create PropertyBags
-	      $bag.AddValue('QueueManager',$QueueManagerName)
+	      $bag.AddValue('QueueManagerName',$QueueManagerName)
 	      $bag.AddValue('ListenerName',$ListenerName)
 	      $bag.AddValue('LStatus',$LStatus)
 	      #Return each property bag as we create and populate it.
@@ -899,7 +899,7 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
   # Load PropertyBag function 
   $bag = $momapi.CreatePropertyBag()
   #Create PropertyBags
-  $bag.AddValue('QueueManager',$QueueManagerName)
+  $bag.AddValue('QueueManagerName',$QueueManagerName)
   $bag.AddValue('QMGRStatus',$QMGRStatus)
   #Return each property bag as we create and populate it.
   $bag
