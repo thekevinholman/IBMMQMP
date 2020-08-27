@@ -21,4 +21,4 @@ Version History:
 - 3.2.1.0 - Original Release
 - 3.2.1.1 - Updated displayname properties on classes to match QueueManagerName, QueueName, ChannelName, ListenerName
 - 3.2.1.2 - Added Queue Percent Used Monitor.  Optimized Queue Monitoring script to run much faster
-- 3.2.1.3 - Fixed bugs in Channel, Listener, and QueueManager status monitors.
+- 3.2.1.3 - Fixed bugs in Channel, Listener, and QueueManager status monitors.  First version shipped as sealed MP.
