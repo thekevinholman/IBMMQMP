@@ -3,7 +3,7 @@
 	<Manifest>
 		<Identity>
 			<ID>IBM.MQ</ID>
-			<Version>3.2.1.3</Version>
+			<Version>3.2.1.4</Version>
 		</Identity>
 		<Name>IBM.MQ</Name>
 		<References>
@@ -44,6 +44,7 @@
 			<ClassTypes>
 				<ClassType ID="IBM.MQ.Channel" Accessibility="Public" Abstract="false" Base="Windows!Microsoft.Windows.ApplicationComponent" Hosted="true" Singleton="false" Extension="false">
 					<Property ID="ChannelName" Type="string" AutoIncrement="false" Key="true" CaseSensitive="false" MaxLength="256" MinLength="0" Required="false" Scale="0" />
+					<Property ID="ChannelType" Type="string" AutoIncrement="false" Key="false" CaseSensitive="false" MaxLength="256" MinLength="0" Required="false" Scale="0" />
 					<Property ID="QueueManagerName" Type="string" AutoIncrement="false" Key="false" CaseSensitive="false" MaxLength="256" MinLength="0" Required="false" Scale="0" />
 				</ClassType>
 				<ClassType ID="IBM.MQ.Listener" Accessibility="Public" Abstract="false" Base="Windows!Microsoft.Windows.ApplicationComponent" Hosted="true" Singleton="false" Extension="false">
@@ -566,7 +567,7 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript Completed. `nRunning as 
 #  IBM MQ Channel Status Script
 #
 #  Author:  Kevin Holman
-#  v1.1
+#  v1.2
 #=================================================================================
 
 
@@ -623,17 +624,18 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
 
       #Get the channel status from ChannelName
       $CStatusCmd = "cmd /c `"echo Display chs('$ChannelName') | runmqsc $QueueManagerName`""
-
       $CStatusOut = Invoke-Expression $CStatusCmd
-
+      
       FOREACH ($CStatusLine in $CStatusOut)
       {
         $CStatusMatch = $CStatusLine | Select-String -Pattern 'STATUS' -CaseSensitive
         IF ($CStatusMatch)
         {
-          $Splitter = "STATUS"
-          $CStatusLineSplit = $CStatusLine -Split $Splitter
+          $Splitter = "STATUS\("
+          $CStatusLineSplit = $CStatusLine -split $Splitter
           $CStatus = $CStatusLineSplit[1]
+          $CStatus = $CStatus -split "\)"
+          $CStatus = $CStatus[0]
           $CStatus = $CStatus -Replace "[()]",""
           $CStatus = $CStatus.Trim()
           #Write-Host "CStatus: ($CStatus)"
@@ -647,6 +649,11 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
 	      $bag.AddValue('CStatus',$CStatus)
 	      #Return each property bag as we create and populate it.
 	      $bag
+
+          #Break out of this loop in the case there might be 
+          #multiple channels returned for a single channel name
+          #Just use the first channel status returned
+          break
         }
       }
     }
@@ -1577,6 +1584,7 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript Completed. `nRunning as 
 				<DiscoveryTypes>
 					<DiscoveryClass TypeID="IBM.MQ.Channel">
 						<Property TypeID="IBM.MQ.Channel" PropertyID="ChannelName" />
+						<Property TypeID="IBM.MQ.Channel" PropertyID="ChannelType" />						
 						<Property TypeID="IBM.MQ.Channel" PropertyID="QueueManagerName" />
 					</DiscoveryClass>
 				</DiscoveryTypes>
@@ -1589,7 +1597,7 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript Completed. `nRunning as 
 #  Discover IBM MQ Channel Discovery
 #
 #  Author: Kevin Holman
-#  v1.1
+#  v1.2
 #=================================================================================
 param($SourceId,$ManagedEntityId,[string]$ComputerName,[string]$QueueManagerName)
 
@@ -1645,15 +1653,18 @@ FOREACH ($CLine in $Cout)
   {
     $CLineSplit = $CLine.Split("(,)")
     [string]$ChannelName = $CLineSplit[1]
-
-    #Write-Host "Found Channel: ($ChannelName)"
+    $ChannelName = $ChannelName.Trim()
+    [string]$ChannelType = $CLineSplit[3]
+    $ChannelType = $ChannelType.Trim()
+    #Write-Host "Found Channel Name: ($ChannelName) Type:($ChannelType)"
   
-    $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nDiscovering Channel: ($ChannelName) `nQueue Manager: ($QueueManagerName).")
+    $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nDiscovering Channel: ($ChannelName). `nChannel Type:($ChannelType). `nQueue Manager: ($QueueManagerName).")
 
     $instance = $DiscoveryData.CreateClassInstance("$MPElement[Name='IBM.MQ.Channel']$")
     $instance.AddProperty("$MPElement[Name='Windows!Microsoft.Windows.Computer']/PrincipalName$",$ComputerName)
     $instance.AddProperty("$MPElement[Name='IBM.MQ.QueueManager']/QueueManagerName$",$QueueManagerName)
     $instance.AddProperty("$MPElement[Name='IBM.MQ.Channel']/ChannelName$",$ChannelName)
+    $instance.AddProperty("$MPElement[Name='IBM.MQ.Channel']/ChannelType$",$ChannelType)
     $instance.AddProperty("$MPElement[Name='IBM.MQ.Channel']/QueueManagerName$",$QueueManagerName)	
     $instance.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$", $ChannelName)
     $DiscoveryData.AddInstance($instance)
@@ -2599,6 +2610,9 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`n Script Completed. `n Script Ru
 				<DisplayString ElementID="IBM.MQ.Channel" SubElementID="ChannelName">
 					<Name>Channel Name</Name>
 				</DisplayString>
+				<DisplayString ElementID="IBM.MQ.Channel" SubElementID="ChannelType">
+					<Name>Channel Type</Name>
+				</DisplayString>				
 				<DisplayString ElementID="IBM.MQ.Channel" SubElementID="QueueManagerName">
 					<Name>Queue Manager Name</Name>
 				</DisplayString>
