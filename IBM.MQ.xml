@@ -3,7 +3,7 @@
 	<Manifest>
 		<Identity>
 			<ID>IBM.MQ</ID>
-			<Version>3.2.1.4</Version>
+			<Version>3.2.1.6</Version>
 		</Identity>
 		<Name>IBM.MQ</Name>
 		<References>
@@ -169,10 +169,10 @@
                 <ScriptBody>
 #=================================================================================
 #  IBM MQ Performance Datasource Script
-#  Outputs:  QueueDepth and IPPROCS
+#  Outputs:  QueueDepth, MaxDepth, QueuePercentUsed, IPPROCS, OPPROCS
 #
 #  Author:  Kevin Holman
-#  v1.5
+#  v1.6
 #=================================================================================
 
 
@@ -228,7 +228,7 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
       # Write-Host "Found Queue: ($QueueName)"
 
       #Get the Queue Properties from the Queue      
-      $QPropsCmd = "cmd /c 'echo Display Queue($QueueName) | runmqsc $QueueManagerName'"
+      $QPropsCmd = "cmd /c `"echo Display Queue('$QueueName') | runmqsc $QueueManagerName`""
       $QPropsOut = Invoke-Expression $QPropsCmd
       # Loop through each line of the Queue properties and pull out any interesting data for a propertybag
       FOREACH ($QPropLine in $QPropsOut)
@@ -425,7 +425,7 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript Completed. `nRunning as 
 #  Outputs:  Sessions
 #
 #  Author:  Kevin Holman
-#  v1.0
+#  v1.1
 #=================================================================================
 
 
@@ -481,7 +481,7 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
       #Write-Host "Found Listener: ($ListenerName)"
 
       #Get Listener Sessions
-      $LSessionsCmd = "cmd /c 'echo DISPLAY Listener($ListenerName) SESSIONS | runmqsc $QueueManagerName'"
+      $LSessionsCmd = "cmd /c `"echo DISPLAY Listener('$ListenerName') SESSIONS | runmqsc $QueueManagerName`""
       $LSessionsOut = Invoke-Expression $LSessionsCmd
 
       [int]$LSessionsValue = 0
@@ -714,7 +714,7 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript Completed. `nRunning as 
 #  IBM MQ Listener Status Script
 #
 #  Author:  Kevin Holman
-#  v1.0
+#  v1.1
 #=================================================================================
 
 
@@ -770,7 +770,7 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
       #Write-Host "Found Listener: ($ListenerName)"
 
       #Get Listener Status
-      $LStatusCmd = "cmd /c 'echo DISPLAY lsstatus($ListenerName) | runmqsc $QueueManagerName'"
+      $LStatusCmd = "cmd /c `"echo DISPLAY lsstatus('$ListenerName') | runmqsc $QueueManagerName`""
       $LStatusOut = Invoke-Expression $LStatusCmd
 
       FOREACH ($LStatusLine in $LStatusOut)
@@ -1856,7 +1856,7 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`n Script Completed. `n Script Ru
 #  IBM MQ Queue Discovery Script
 #
 #  Author: Kevin Holman
-#  v1.4
+#  v1.5
 #=================================================================================
 param($SourceId,$ManagedEntityId,[string]$ComputerName,[string]$QueueManagerName)
 
@@ -1934,7 +1934,7 @@ $DiscoveryData = $momapi.CreateDiscoveryData(0, $SourceId, $ManagedEntityId)
       IF ($ContinueDiscovery)
       {
         #Get Queue Properties
-        $QPropcmd = "cmd /c 'echo Display Queue ($QueueName) TYPE DESCR MAXDEPTH MAXMSGL | runmqsc $QueueManagerName'"
+        $QPropcmd = "cmd /c `"echo Display Queue ('$QueueName') TYPE DESCR MAXDEPTH MAXMSGL | runmqsc $QueueManagerName`""
         $QPropout = Invoke-Expression $QPropcmd
 
         FOREACH ($QPropLine in $QPropout)
