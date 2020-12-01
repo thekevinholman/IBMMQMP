@@ -3,7 +3,7 @@
 	<Manifest>
 		<Identity>
 			<ID>IBM.MQ</ID>
-			<Version>3.2.1.6</Version>
+			<Version>3.2.1.7</Version>
 		</Identity>
 		<Name>IBM.MQ</Name>
 		<References>
@@ -174,7 +174,7 @@
 #  Author:  Kevin Holman
 #  v1.6
 #=================================================================================
-
+param($installPath)
 
 # Manual Testing section - put stuff here for manually testing script - typically parameters:
 #=================================================================================
@@ -202,11 +202,13 @@ $momapi = New-Object -comObject MOM.ScriptAPI
 #=================================================================================
 
 
+Set-WinUILanguageOverride -Language "en-US"
 # Begin MAIN script section
 #=================================================================================
 #Get the Queue Managers
-$QMGRcmd = "dspmq"
-$QMGRcmdOut = Invoke-Expression $QMGRcmd
+$QMGRcmd = "$($InstallPath)\bin\dspmq"
+$QMGRcmdOut = . "$QMGRcmd"
+
 FOREACH ($QMGRLine in $QMGRcmdOut)
 {
   $QMGRLineSplit = $QMGRLine.Split("(,)")
@@ -214,7 +216,7 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
   # Write-Host "Found QueueManagerName: ($QueueManagerName)"
 
   #Get the queues from each QueueManager
-  $Qcmd = "cmd /c 'echo Display QL(*) | runmqsc $QueueManagerName'"
+  $Qcmd = "cmd /c 'cd $($InstallPath)\bin\ &amp; echo Display QL(*) | runmqsc $QueueManagerName'"
 
   # Write-Host "Getting Queues from ($QM) using $Qcmd"
   $Qout = Invoke-Expression $Qcmd
@@ -228,7 +230,7 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
       # Write-Host "Found Queue: ($QueueName)"
 
       #Get the Queue Properties from the Queue      
-      $QPropsCmd = "cmd /c `"echo Display Queue('$QueueName') | runmqsc $QueueManagerName`""
+      $QPropsCmd = "cmd /c 'cd $($InstallPath)\bin\ &amp; echo Display Queue($QueueName) | runmqsc $QueueManagerName'"
       $QPropsOut = Invoke-Expression $QPropsCmd
       # Loop through each line of the Queue properties and pull out any interesting data for a propertybag
       FOREACH ($QPropLine in $QPropsOut)
@@ -315,6 +317,7 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
 }
 #=================================================================================
 # End MAIN script section
+Set-WinUILanguageOverride
 
 
 # End of script section
@@ -327,7 +330,11 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript Completed. `nRunning as 
 # End of script
                 </ScriptBody>
                 <Parameters>
-                </Parameters>				
+					<Parameter>
+						<Name>InstallPath</Name>
+						<Value>$Target/Host/Host/Property[Type="IBM.MQ.Server"]/InstallPath$</Value>
+					</Parameter>
+				</Parameters>				
                 <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
               </ProbeAction>
             </MemberModules>
@@ -427,7 +434,7 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript Completed. `nRunning as 
 #  Author:  Kevin Holman
 #  v1.1
 #=================================================================================
-
+param($installPath)
 
 # Manual Testing section - put stuff here for manually testing script - typically parameters:
 #=================================================================================
@@ -455,11 +462,13 @@ $momapi = New-Object -comObject MOM.ScriptAPI
 #=================================================================================
 
 
+Set-WinUILanguageOverride -Language "en-US"
 # Begin MAIN script section
 #=================================================================================
 #Get the Queue Managers
-$QMGRcmd = "dspmq"
-$QMGRcmdOut = Invoke-Expression $QMGRcmd
+$QMGRcmd = "$($InstallPath)\bin\dspmq"
+$QMGRcmdOut = . "$QMGRcmd"
+
 FOREACH ($QMGRLine in $QMGRcmdOut)
 {
   $QMGRLineSplit = $QMGRLine.Split("(,)")
@@ -467,7 +476,7 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
   #Write-Host "Found QM: ($QueueManagerName)"
 
   #Get the Listeners from each QueueManager
-  $Lcmd = "cmd /c 'echo Display listener(*) | runmqsc $QueueManagerName'"
+  $Lcmd = "cmd /c 'cd $($InstallPath)\bin\ &amp; echo Display listener(*) | runmqsc $QueueManagerName'"
 
   $Lout = Invoke-Expression $Lcmd
   FOREACH ($LLine in $Lout)
@@ -481,7 +490,7 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
       #Write-Host "Found Listener: ($ListenerName)"
 
       #Get Listener Sessions
-      $LSessionsCmd = "cmd /c `"echo DISPLAY Listener('$ListenerName') SESSIONS | runmqsc $QueueManagerName`""
+      $LSessionsCmd = "cmd /c 'cd $($InstallPath)\bin\ &amp; echo DISPLAY Listener($ListenerName) SESSIONS | runmqsc $QueueManagerName'"
       $LSessionsOut = Invoke-Expression $LSessionsCmd
 
       [int]$LSessionsValue = 0
@@ -514,6 +523,7 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
 }
 #=================================================================================
 # End MAIN script section
+Set-WinUILanguageOverride
 
 
 # End of script section
@@ -526,6 +536,10 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript Completed. `nRunning as 
 # End of script
                 </ScriptBody>
                 <Parameters>
+					<Parameter>
+              			<Name>InstallPath</Name>
+              			<Value>$Target/Host/Host/Property[Type="IBM.MQ.Server"]/InstallPath$</Value>
+            		</Parameter>
                 </Parameters>				
                 <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
               </ProbeAction>
@@ -569,7 +583,7 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript Completed. `nRunning as 
 #  Author:  Kevin Holman
 #  v1.2
 #=================================================================================
-
+param($installPath)
 
 # Manual Testing section - put stuff here for manually testing script - typically parameters:
 #=================================================================================
@@ -597,11 +611,13 @@ $momapi = New-Object -comObject MOM.ScriptAPI
 #=================================================================================
 
 
+Set-WinUILanguageOverride -Language "en-US"
 # Begin MAIN script section
 #=================================================================================
 #Get the Queue Managers
-$QMGRcmd = "dspmq"
-$QMGRcmdOut = Invoke-Expression $QMGRcmd
+$QMGRcmd = "$($InstallPath)\bin\dspmq"
+$QMGRcmdOut = . "$QMGRcmd"
+
 FOREACH ($QMGRLine in $QMGRcmdOut)
 {
   $QMGRLineSplit = $QMGRLine.Split("(,)")
@@ -609,7 +625,7 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
   #Write-Host "Found QM: ($QueueManagerName)"
 
   #Get the Channels from each QueueManager
-  $Ccmd = "cmd /c 'echo Display channel(*) | runmqsc $QueueManagerName'"
+  $Ccmd = "cmd /c 'cd $($InstallPath)\bin\ &amp; echo Display channel(*) | runmqsc $QueueManagerName'"
 
   $Cout = Invoke-Expression $Ccmd
   FOREACH ($CLine in $Cout)
@@ -623,7 +639,7 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
       #Write-Host "Found Channel: ($ChannelName)"
 
       #Get the channel status from ChannelName
-      $CStatusCmd = "cmd /c `"echo Display chs('$ChannelName') | runmqsc $QueueManagerName`""
+      $CStatusCmd = "cmd /c 'cd $($InstallPath)\bin\ &amp; echo Display chs($ChannelName) | runmqsc $QueueManagerName'"
       $CStatusOut = Invoke-Expression $CStatusCmd
       
       FOREACH ($CStatusLine in $CStatusOut)
@@ -661,6 +677,7 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
 }
 #=================================================================================
 # End MAIN script section
+Set-WinUILanguageOverride
 
 
 # End of script section
@@ -673,6 +690,10 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript Completed. `nRunning as 
 # End of script
                 </ScriptBody>
                 <Parameters>
+            		<Parameter>
+			            <Name>InstallPath</Name>
+              			<Value>$Target/Host/Host/Property[Type="IBM.MQ.Server"]/InstallPath$</Value>
+            		</Parameter>
                 </Parameters>				
                 <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
               </ProbeAction>
@@ -716,7 +737,7 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript Completed. `nRunning as 
 #  Author:  Kevin Holman
 #  v1.1
 #=================================================================================
-
+param($installPath)
 
 # Manual Testing section - put stuff here for manually testing script - typically parameters:
 #=================================================================================
@@ -744,11 +765,13 @@ $momapi = New-Object -comObject MOM.ScriptAPI
 #=================================================================================
 
 
+Set-WinUILanguageOverride -Language "en-US"
 # Begin MAIN script section
 #=================================================================================
 #Get the Queue Managers
-$QMGRcmd = "dspmq"
-$QMGRcmdOut = Invoke-Expression $QMGRcmd
+$QMGRcmd = "$($InstallPath)\bin\dspmq"
+$QMGRcmdOut = . "$QMGRcmd"
+
 FOREACH ($QMGRLine in $QMGRcmdOut)
 {
   $QMGRLineSplit = $QMGRLine.Split("(,)")
@@ -756,7 +779,7 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
   #Write-Host "Found QM: ($QueueManagerName)"
 
   #Get the Listeners from each QueueManager
-  $Lcmd = "cmd /c 'echo Display listener(*) | runmqsc $QueueManagerName'"
+  $Lcmd = "cmd /c 'cd $($InstallPath)\bin\ &amp; echo Display listener(*) | runmqsc $QueueManagerName'"
 
   $Lout = Invoke-Expression $Lcmd
   FOREACH ($LLine in $Lout)
@@ -770,7 +793,7 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
       #Write-Host "Found Listener: ($ListenerName)"
 
       #Get Listener Status
-      $LStatusCmd = "cmd /c `"echo DISPLAY lsstatus('$ListenerName') | runmqsc $QueueManagerName`""
+      $LStatusCmd = "cmd /c 'cd $($InstallPath)\bin\ &amp; echo DISPLAY lsstatus($ListenerName) | runmqsc $QueueManagerName'"
       $LStatusOut = Invoke-Expression $LStatusCmd
 
       FOREACH ($LStatusLine in $LStatusOut)
@@ -801,6 +824,7 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
 }
 #=================================================================================
 # End MAIN script section
+Set-WinUILanguageOverride
 
 
 # End of script section
@@ -813,6 +837,10 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript Completed. `nRunning as 
 # End of script
                 </ScriptBody>
                 <Parameters>
+            		<Parameter>
+              			<Name>InstallPath</Name>
+              			<Value>$Target/Host/Host/Property[Type="IBM.MQ.Server"]/InstallPath$</Value>
+            		</Parameter>
                 </Parameters>				
                 <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
               </ProbeAction>
@@ -856,7 +884,7 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript Completed. `nRunning as 
 #  Author:  Kevin Holman
 #  v1.0
 #=================================================================================
-
+param($installPath)
 
 # Manual Testing section - put stuff here for manually testing script - typically parameters:
 #=================================================================================
@@ -883,12 +911,13 @@ $momapi = New-Object -comObject MOM.ScriptAPI
 #$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript is starting. `nRunning as ($whoami).")
 #=================================================================================
 
-
+Set-WinUILanguageOverride -Language "en-US"
 # Begin MAIN script section
 #=================================================================================
 #Get the Queue Managers
-$QMGRcmd = "dspmq"
-$QMGRcmdOut = Invoke-Expression $QMGRcmd
+$QMGRcmd = "$($InstallPath)\bin\dspmq"
+$QMGRcmdOut = . "$QMGRcmd"
+
 FOREACH ($QMGRLine in $QMGRcmdOut)
 {
   $QMGRLineSplit = $QMGRLine.Split("(,)")
@@ -913,7 +942,7 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
 }
 #=================================================================================
 # End MAIN script section
-
+Set-WinUILanguageOverride
 
 # End of script section
 #=================================================================================
@@ -925,6 +954,10 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript Completed. `nRunning as 
 # End of script
                 </ScriptBody>
                 <Parameters>
+            		<Parameter>
+              			<Name>InstallPath</Name>
+              			<Value>$Target/Host/Property[Type="IBM.MQ.Server"]/InstallPath$</Value>
+            		</Parameter>
                 </Parameters>				
                 <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
               </ProbeAction>
@@ -1599,7 +1632,7 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nScript Completed. `nRunning as 
 #  Author: Kevin Holman
 #  v1.2
 #=================================================================================
-param($SourceId,$ManagedEntityId,[string]$ComputerName,[string]$QueueManagerName)
+param($SourceId,$ManagedEntityId,[string]$ComputerName,[string]$QueueManagerName,$InstallPath)
 
 
 # Manual Testing section - put stuff here for manually testing script - typically parameters:
@@ -1640,12 +1673,13 @@ $DiscoveryData = $momapi.CreateDiscoveryData(0, $SourceId, $ManagedEntityId)
 #=================================================================================	
 
 
+Set-WinUILanguageOverride -Language "en-US"
 # Begin MAIN script section
 #=================================================================================
 #Get the Channel from QueueManager
-$Ccmd = "cmd /c 'echo Display channel(*) | runmqsc $QueueManagerName'"
+$Ccmd = "cmd /c 'cd $($InstallPath)\bin\ &amp; echo Display channel(*) | runmqsc $QueueManagerName'"
+$Cout = Invoke-Expression "$Ccmd"
 
-$Cout = Invoke-Expression $Ccmd
 FOREACH ($CLine in $Cout)
 {
   $Cmatch = $CLine | Select-String -Pattern 'CHANNEL\(' -CaseSensitive
@@ -1677,6 +1711,7 @@ $DiscoveryData
 # $momapi.Return($DiscoveryData)
 #=================================================================================
 # End MAIN script section
+Set-WinUILanguageOverride
 
 
 # End of script section
@@ -1704,6 +1739,10 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`n Script Completed. `n Script Ru
 					<Parameter>
 					  <Name>QueueManagerName</Name>
 					  <Value>$Target/Property[Type="IBM.MQ.QueueManager"]/QueueManagerName$</Value>
+					</Parameter>
+            		<Parameter>
+	              		<Name>InstallPath</Name>
+    	          		<Value>$Target/Host/Property[Type="IBM.MQ.Server"]/InstallPath$</Value>
 					</Parameter>					
 				  </Parameters>
 				  <TimeoutSeconds>300</TimeoutSeconds>
@@ -1728,7 +1767,7 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`n Script Completed. `n Script Ru
 #  Author: Kevin Holman
 #  v1.1
 #=================================================================================
-param($SourceId,$ManagedEntityId,[string]$ComputerName,[string]$QueueManagerName)
+param($SourceId,$ManagedEntityId,[string]$ComputerName,[string]$QueueManagerName,$InstallPath)
 
 
 # Manual Testing section - put stuff here for manually testing script - typically parameters:
@@ -1769,12 +1808,13 @@ $DiscoveryData = $momapi.CreateDiscoveryData(0, $SourceId, $ManagedEntityId)
 #=================================================================================	
 
 
+Set-WinUILanguageOverride -Language "en-US"
 # Begin MAIN script section
 #=================================================================================
 #Get the Listener from QueueManager
-$Lcmd = "cmd /c 'echo Display listener(*) | runmqsc $QueueManagerName'"
+$Lcmd = "cmd /c 'cd $($InstallPath)\bin\ &amp; echo Display listener(*) | runmqsc $QueueManagerName'"
+$Lout = Invoke-Expression "$Lcmd"
 
-$Lout = Invoke-Expression $Lcmd
 FOREACH ($LLine in $Lout)
 {
   $Lmatch = $LLine | Select-String -Pattern 'LISTENER\(' -CaseSensitive
@@ -1803,6 +1843,7 @@ $DiscoveryData
 # $momapi.Return($DiscoveryData)
 #=================================================================================
 # End MAIN script section
+Set-WinUILanguageOverride
 
 
 # End of script section
@@ -1830,7 +1871,11 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`n Script Completed. `n Script Ru
 					<Parameter>
 					  <Name>QueueManagerName</Name>
 					  <Value>$Target/Property[Type="IBM.MQ.QueueManager"]/QueueManagerName$</Value>
-					</Parameter>					
+					</Parameter>
+            		<Parameter>
+              			<Name>InstallPath</Name>
+              			<Value>$Target/Host/Property[Type="IBM.MQ.Server"]/InstallPath$</Value>
+            		</Parameter>					
 				  </Parameters>
 				  <TimeoutSeconds>300</TimeoutSeconds>
 				</DataSource>				
@@ -1858,7 +1903,7 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`n Script Completed. `n Script Ru
 #  Author: Kevin Holman
 #  v1.5
 #=================================================================================
-param($SourceId,$ManagedEntityId,[string]$ComputerName,[string]$QueueManagerName)
+param($SourceId,$ManagedEntityId,[string]$ComputerName,[string]$QueueManagerName,$InstallPath)
 
 
 # Manual Testing section - put stuff here for manually testing script - typically parameters:
@@ -1901,10 +1946,11 @@ $DiscoveryData = $momapi.CreateDiscoveryData(0, $SourceId, $ManagedEntityId)
 #=================================================================================	
 
 
+Set-WinUILanguageOverride -Language "en-US"
 # Begin MAIN script section
 #=================================================================================
   #Get the queues from QueueManager
-  $Qcmd = "cmd /c 'echo Display QL(*) | runmqsc $QueueManagerName'"
+  $Qcmd = "cmd /c 'cd $($InstallPath)\bin\ &amp; echo Display QL(*) | runmqsc $QueueManagerName'"
   # Write-Host "Getting Queues from ($QueueManagerName) using $Qcmd"
   $Qout = Invoke-Expression $Qcmd
   
@@ -1934,7 +1980,7 @@ $DiscoveryData = $momapi.CreateDiscoveryData(0, $SourceId, $ManagedEntityId)
       IF ($ContinueDiscovery)
       {
         #Get Queue Properties
-        $QPropcmd = "cmd /c `"echo Display Queue ('$QueueName') TYPE DESCR MAXDEPTH MAXMSGL | runmqsc $QueueManagerName`""
+        $QPropcmd = "cmd /c 'cd $($InstallPath)\bin\ &amp; echo Display Queue ($QueueName) TYPE DESCR MAXDEPTH MAXMSGL | runmqsc $QueueManagerName'"
         $QPropout = Invoke-Expression $QPropcmd
 
         FOREACH ($QPropLine in $QPropout)
@@ -2015,6 +2061,7 @@ $DiscoveryData
 # $momapi.Return($DiscoveryData)
 #=================================================================================
 # End MAIN script section
+Set-WinUILanguageOverride
 
 
 # End of script section
@@ -2042,7 +2089,11 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`n Script Completed. `n Script Ru
 					<Parameter>
 					  <Name>QueueManagerName</Name>
 					  <Value>$Target/Property[Type="IBM.MQ.QueueManager"]/QueueManagerName$</Value>
-					</Parameter>					
+					</Parameter>
+            		<Parameter>
+              			<Name>InstallPath</Name>
+              			<Value>$Target/Host/Property[Type="IBM.MQ.Server"]/InstallPath$</Value>
+            		</Parameter>					
 				  </Parameters>
 				  <TimeoutSeconds>300</TimeoutSeconds>
 				</DataSource>				
@@ -2065,7 +2116,7 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`n Script Completed. `n Script Ru
 #  Author: Kevin Holman
 #  v1.1
 #=================================================================================
-param($SourceId,$ManagedEntityId,$ComputerName)
+param($SourceId,$ManagedEntityId,$ComputerName,$InstallPath)
 
 
 # Manual Testing section - put stuff here for manually testing script - typically parameters:
@@ -2105,11 +2156,13 @@ $DiscoveryData = $momapi.CreateDiscoveryData(0, $SourceId, $ManagedEntityId)
 #=================================================================================	
 
 
+Set-WinUILanguageOverride -Language "en-US"
 # Begin MAIN script section
 #=================================================================================
 #Get the Queue Managers
-$QMGRcmd = "dspmq"
-$QMGRcmdOut = Invoke-Expression $QMGRcmd
+$QMGRcmd = "$($InstallPath)\bin\dspmq"
+$QMGRcmdOut = . "$QMGRcmd"
+
 FOREACH ($QMGRLine in $QMGRcmdOut)
 {
   $QMGRLineSplit = $QMGRLine.Split("(,)")
@@ -2129,6 +2182,7 @@ $DiscoveryData
 # $momapi.Return($DiscoveryData)
 #=================================================================================
 # End MAIN script section
+Set-WinUILanguageOverride
 
 
 # End of script section
@@ -2153,6 +2207,10 @@ $momapi.LogScriptEvent($ScriptName,$EventID,0,"`n Script Completed. `n Script Ru
 					  <Name>ComputerName</Name>
 					  <Value>$Target/Host/Property[Type="Windows!Microsoft.Windows.Computer"]/PrincipalName$</Value>
 					</Parameter>
+            		<Parameter>
+              			<Name>InstallPath</Name>
+              			<Value>$Target/Property[Type="IBM.MQ.Server"]/InstallPath$</Value>
+            		</Parameter>
 				  </Parameters>
 				  <TimeoutSeconds>300</TimeoutSeconds>
 				</DataSource>				
