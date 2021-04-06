@@ -3,7 +3,7 @@
 	<Manifest>
 		<Identity>
 			<ID>IBM.MQ</ID>
-			<Version>3.2.1.7</Version>
+			<Version>3.2.1.8</Version>
 		</Identity>
 		<Name>IBM.MQ</Name>
 		<References>
@@ -222,88 +222,88 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
   $Qout = Invoke-Expression $Qcmd
   FOREACH ($QLine in $Qout)
   {
-    $Qmatch = $QLine | Select-String -Pattern 'QUEUE\('
-    IF ($Qmatch)
-    {
-      $QLineSplit = $QLine.Split("(,)")
-      [string]$QueueName = $QLineSplit[1]
-      # Write-Host "Found Queue: ($QueueName)"
+	$Qmatch = $QLine | Select-String -Pattern 'QUEUE\('
+	IF ($Qmatch)
+	{
+	  $QLineSplit = $QLine.Split("(,)")
+	  [string]$QueueName = $QLineSplit[1]
+	  # Write-Host "Found Queue: ($QueueName)"
 
-      #Get the Queue Properties from the Queue      
-      $QPropsCmd = "cmd /c 'cd $($InstallPath)\bin\ &amp; echo Display Queue($QueueName) | runmqsc $QueueManagerName'"
-      $QPropsOut = Invoke-Expression $QPropsCmd
-      # Loop through each line of the Queue properties and pull out any interesting data for a propertybag
-      FOREACH ($QPropLine in $QPropsOut)
-      {
-        #Get QueueDepth
-        $QDmatch = $QPropLine | Select-String -Pattern 'CURDEPTH\('
-        IF ($QDMatch)
-        {
-          $Splitter = "CURDEPTH"
-          $QDLineSplit = $QDMatch -Split $Splitter
-          $QD = $QDLineSplit[1]
-          $QD = $QD.Substring(0, $QD.IndexOf(')'))
-          $QD = $QD -Replace "[()]",""
-          $QD = $QD.Trim()
+	  #Get the Queue Properties from the Queue      
+	  $QPropsCmd = "cmd /c 'cd $($InstallPath)\bin\ &amp; echo Display Queue($QueueName) | runmqsc $QueueManagerName'"
+	  $QPropsOut = Invoke-Expression $QPropsCmd
+	  # Loop through each line of the Queue properties and pull out any interesting data for a propertybag
+	  FOREACH ($QPropLine in $QPropsOut)
+	  {
+		#Get QueueDepth
+		$QDmatch = $QPropLine | Select-String -Pattern 'CURDEPTH\('
+		IF ($QDMatch)
+		{
+		  $Splitter = "CURDEPTH"
+		  $QDLineSplit = $QDMatch -Split $Splitter
+		  $QD = $QDLineSplit[1]
+		  $QD = $QD.Substring(0, $QD.IndexOf(')'))
+		  $QD = $QD -Replace "[()]",""
+		  $QD = $QD.Trim()
 		  [int]$QueueDepth = $QD
-          #Write-Host "QueueManagerName: ($QueueManagerName) QueueName:($QueueName) QueueDepth:($QueueDepth)"
+		  #Write-Host "QueueManagerName: ($QueueManagerName) QueueName:($QueueName) QueueDepth:($QueueDepth)"
 		  #$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nQueueManagerName:($QueueManagerName) `nQueueName:($QueueName) `nQueueDepth:($QueueDepth).")
-        }
+		}
 
-        #Get IPPROCS
-        $QIPPROCSmatch = $QPropLine | Select-String -Pattern 'IPPROCS\('
-        IF ($QIPPROCSmatch)
-        {
-          $Splitter = "IPPROCS"
-          $QIPPROCSSplit = $QIPPROCSmatch -Split $Splitter
-          $QIPPROCS = $QIPPROCSSplit[1]
-          $QIPPROCS = $QIPPROCS.Substring(0, $QIPPROCS.IndexOf(')'))
-          $QIPPROCS = $QIPPROCS -Replace "[()]",""
-          $QIPPROCS = $QIPPROCS.Trim()
+		#Get IPPROCS
+		$QIPPROCSmatch = $QPropLine | Select-String -Pattern 'IPPROCS\('
+		IF ($QIPPROCSmatch)
+		{
+		  $Splitter = "IPPROCS"
+		  $QIPPROCSSplit = $QIPPROCSmatch -Split $Splitter
+		  $QIPPROCS = $QIPPROCSSplit[1]
+		  $QIPPROCS = $QIPPROCS.Substring(0, $QIPPROCS.IndexOf(')'))
+		  $QIPPROCS = $QIPPROCS -Replace "[()]",""
+		  $QIPPROCS = $QIPPROCS.Trim()
 		  [int]$IPPROCS = $QIPPROCS
-          #Write-Host "QueueManagerName: ($QueueManagerName) QueueName:($QueueName) IPPROCS:($IPPROCS)"
+		  #Write-Host "QueueManagerName: ($QueueManagerName) QueueName:($QueueName) IPPROCS:($IPPROCS)"
 		  #$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nQueueManagerName:($QueueManagerName) `nQueueName:($QueueName) `nIPPROCS:($IPPROCS).")
-        }
+		}
 
-        #Get OPPROCS
-        $QOPPROCSmatch = $QPropLine | Select-String -Pattern 'OPPROCS\('
-        IF ($QOPPROCSmatch)
-        {
-          $Splitter = "OPPROCS"
-          $QOPPROCSSplit = $QOPPROCSmatch -Split $Splitter
-          $QOPPROCS = $QOPPROCSSplit[1]
-          $QOPPROCS = $QOPPROCS.Substring(0, $QOPPROCS.IndexOf(')'))
-          $QOPPROCS = $QOPPROCS -Replace "[()]",""
-          $QOPPROCS = $QOPPROCS.Trim()
+		#Get OPPROCS
+		$QOPPROCSmatch = $QPropLine | Select-String -Pattern 'OPPROCS\('
+		IF ($QOPPROCSmatch)
+		{
+		  $Splitter = "OPPROCS"
+		  $QOPPROCSSplit = $QOPPROCSmatch -Split $Splitter
+		  $QOPPROCS = $QOPPROCSSplit[1]
+		  $QOPPROCS = $QOPPROCS.Substring(0, $QOPPROCS.IndexOf(')'))
+		  $QOPPROCS = $QOPPROCS -Replace "[()]",""
+		  $QOPPROCS = $QOPPROCS.Trim()
 		  [int]$OPPROCS = $QOPPROCS
-          #Write-Host "QueueManagerName: ($QueueManagerName) QueueName:($QueueName) OPPROCS:($OPPROCS)"
+		  #Write-Host "QueueManagerName: ($QueueManagerName) QueueName:($QueueName) OPPROCS:($OPPROCS)"
 		  #$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nQueueManagerName:($QueueManagerName) `nQueueName:($QueueName) `nOPPROCS:($OPPROCS).")
-        }
+		}
 
-        #Get Queue MAXDEPTH
-        $QMAXDEPTHmatch = $QPropLine | Select-String -Pattern 'MAXDEPTH\('
-        IF ($QMAXDEPTHmatch)
-        {
-          $Splitter = "MAXDEPTH"
-          $QMAXDEPTHSplit = $QMAXDEPTHmatch -Split $Splitter
-          $QMAXDEPTH = $QMAXDEPTHSplit[1]
-          $QMAXDEPTH = $QMAXDEPTH.Substring(0, $QMAXDEPTH.IndexOf(')'))
-          $QMAXDEPTH = $QMAXDEPTH -Replace "[()]",""
-          $QMAXDEPTH = $QMAXDEPTH.Trim()
+		#Get Queue MAXDEPTH
+		$QMAXDEPTHmatch = $QPropLine | Select-String -Pattern 'MAXDEPTH\('
+		IF ($QMAXDEPTHmatch)
+		{
+		  $Splitter = "MAXDEPTH"
+		  $QMAXDEPTHSplit = $QMAXDEPTHmatch -Split $Splitter
+		  $QMAXDEPTH = $QMAXDEPTHSplit[1]
+		  $QMAXDEPTH = $QMAXDEPTH.Substring(0, $QMAXDEPTH.IndexOf(')'))
+		  $QMAXDEPTH = $QMAXDEPTH -Replace "[()]",""
+		  $QMAXDEPTH = $QMAXDEPTH.Trim()
 		  [int]$MAXDEPTH = $QMAXDEPTH
-          #Write-Host "QueueManagerName: ($QueueManagerName) QueueName:($QueueName) MAXDEPTH:($MAXDEPTH)"
+		  #Write-Host "QueueManagerName: ($QueueManagerName) QueueName:($QueueName) MAXDEPTH:($MAXDEPTH)"
 		  #$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nQueueManagerName:($QueueManagerName) `nQueueName:($QueueName) `nMAXDEPTH:($MAXDEPTH).")
-        }
-      }
+		}
+	  }
 
-      #Get Queue Percent Used
-      [int]$QueuePercentUsed = ([Math]::Round(($QueueDepth / $MAXDEPTH),2)*100)
-      #Write-Host "QueueManagerName: ($QueueManagerName) QueueName:($QueueName) QueuePercentUsed:($QueuePercentUsed)"
+	  #Get Queue Percent Used
+	  [int]$QueuePercentUsed = ([Math]::Round(($QueueDepth / $MAXDEPTH),2)*100)
+	  #Write-Host "QueueManagerName: ($QueueManagerName) QueueName:($QueueName) QueuePercentUsed:($QueuePercentUsed)"
 
-      # Load PropertyBag function 
-      $bag = $momapi.CreatePropertyBag()
-      #Create PropertyBags
-      $bag.AddValue('QueueManagerName',$QueueManagerName)
+	  # Load PropertyBag function 
+	  $bag = $momapi.CreatePropertyBag()
+	  #Create PropertyBags
+	  $bag.AddValue('QueueManagerName',$QueueManagerName)
 	  $bag.AddValue('QueueName',$QueueName)
 	  $bag.AddValue('QueueDepth',$QueueDepth)
 	  $bag.AddValue('MAXDEPTH',$MAXDEPTH)
@@ -312,7 +312,7 @@ FOREACH ($QMGRLine in $QMGRcmdOut)
 	  $bag.AddValue('OPPROCS',$OPPROCS)
 	  #Return each property bag as we create and populate it.
 	  $bag
-    }
+	}
   }
 }
 #=================================================================================
@@ -1680,35 +1680,38 @@ Set-WinUILanguageOverride -Language "en-US"
 $Ccmd = "cmd /c 'cd $($InstallPath)\bin\ &amp; echo Display channel(*) | runmqsc $QueueManagerName'"
 $Cout = Invoke-Expression "$Ccmd"
 
-FOREACH ($CLine in $Cout)
+IF ($Cout -notlike "*IBM MQ queue manager not available.*")
 {
-  $Cmatch = $CLine | Select-String -Pattern 'CHANNEL\(' -CaseSensitive
-  IF ($Cmatch)
-  {
-    $CLineSplit = $CLine.Split("(,)")
-    [string]$ChannelName = $CLineSplit[1]
-    $ChannelName = $ChannelName.Trim()
-    [string]$ChannelType = $CLineSplit[3]
-    $ChannelType = $ChannelType.Trim()
-    #Write-Host "Found Channel Name: ($ChannelName) Type:($ChannelType)"
-  
-    $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nDiscovering Channel: ($ChannelName). `nChannel Type:($ChannelType). `nQueue Manager: ($QueueManagerName).")
+	FOREACH ($CLine in $Cout)
+	{
+	  $Cmatch = $CLine | Select-String -Pattern 'CHANNEL\(' -CaseSensitive
+	  IF ($Cmatch)
+	  {
+		$CLineSplit = $CLine.Split("(,)")
+		[string]$ChannelName = $CLineSplit[1]
+		$ChannelName = $ChannelName.Trim()
+		[string]$ChannelType = $CLineSplit[3]
+		$ChannelType = $ChannelType.Trim()
+		#Write-Host "Found Channel Name: ($ChannelName) Type:($ChannelType)"
+	  
+		$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nDiscovering Channel: ($ChannelName). `nChannel Type:($ChannelType). `nQueue Manager: ($QueueManagerName).")
 
-    $instance = $DiscoveryData.CreateClassInstance("$MPElement[Name='IBM.MQ.Channel']$")
-    $instance.AddProperty("$MPElement[Name='Windows!Microsoft.Windows.Computer']/PrincipalName$",$ComputerName)
-    $instance.AddProperty("$MPElement[Name='IBM.MQ.QueueManager']/QueueManagerName$",$QueueManagerName)
-    $instance.AddProperty("$MPElement[Name='IBM.MQ.Channel']/ChannelName$",$ChannelName)
-    $instance.AddProperty("$MPElement[Name='IBM.MQ.Channel']/ChannelType$",$ChannelType)
-    $instance.AddProperty("$MPElement[Name='IBM.MQ.Channel']/QueueManagerName$",$QueueManagerName)	
-    $instance.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$", $ChannelName)
-    $DiscoveryData.AddInstance($instance)
-  }
+		$instance = $DiscoveryData.CreateClassInstance("$MPElement[Name='IBM.MQ.Channel']$")
+		$instance.AddProperty("$MPElement[Name='Windows!Microsoft.Windows.Computer']/PrincipalName$",$ComputerName)
+		$instance.AddProperty("$MPElement[Name='IBM.MQ.QueueManager']/QueueManagerName$",$QueueManagerName)
+		$instance.AddProperty("$MPElement[Name='IBM.MQ.Channel']/ChannelName$",$ChannelName)
+		$instance.AddProperty("$MPElement[Name='IBM.MQ.Channel']/ChannelType$",$ChannelType)
+		$instance.AddProperty("$MPElement[Name='IBM.MQ.Channel']/QueueManagerName$",$QueueManagerName)	
+		$instance.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$", $ChannelName)
+		$DiscoveryData.AddInstance($instance)
+	  }
+	}
+
+	# Return Discovery Items Normally           
+	$DiscoveryData
+	# Return Discovery Bag to the command line for testing (does not work from ISE)
+	# $momapi.Return($DiscoveryData)
 }
-
-# Return Discovery Items Normally           
-$DiscoveryData
-# Return Discovery Bag to the command line for testing (does not work from ISE)
-# $momapi.Return($DiscoveryData)
 #=================================================================================
 # End MAIN script section
 Set-WinUILanguageOverride
@@ -1815,32 +1818,35 @@ Set-WinUILanguageOverride -Language "en-US"
 $Lcmd = "cmd /c 'cd $($InstallPath)\bin\ &amp; echo Display listener(*) | runmqsc $QueueManagerName'"
 $Lout = Invoke-Expression "$Lcmd"
 
-FOREACH ($LLine in $Lout)
+IF ($Lout -notlike "*IBM MQ queue manager not available.*")
 {
-  $Lmatch = $LLine | Select-String -Pattern 'LISTENER\(' -CaseSensitive
-  IF ($Lmatch)
+  FOREACH ($LLine in $Lout)
   {
-    $LLineSplit = $LLine.Split("(,)")
-    [string]$ListenerName = $LLineSplit[1]
+	  $Lmatch = $LLine | Select-String -Pattern 'LISTENER\(' -CaseSensitive
+	  IF ($Lmatch)
+	  {
+		$LLineSplit = $LLine.Split("(,)")
+		[string]$ListenerName = $LLineSplit[1]
 
-    #Write-Host "Found Listener: ($ListenerName)"
-  
-    $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nDiscovering Listener: ($ListenerName) `nQueue Manager: ($QueueManagerName).")
+		#Write-Host "Found Listener: ($ListenerName)"
+	  
+		$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nDiscovering Listener: ($ListenerName) `nQueue Manager: ($QueueManagerName).")
 
-    $instance = $DiscoveryData.CreateClassInstance("$MPElement[Name='IBM.MQ.Listener']$")
-    $instance.AddProperty("$MPElement[Name='Windows!Microsoft.Windows.Computer']/PrincipalName$",$ComputerName)
-    $instance.AddProperty("$MPElement[Name='IBM.MQ.QueueManager']/QueueManagerName$",$QueueManagerName)
-    $instance.AddProperty("$MPElement[Name='IBM.MQ.Listener']/ListenerName$",$ListenerName)
-    $instance.AddProperty("$MPElement[Name='IBM.MQ.Listener']/QueueManagerName$",$QueueManagerName)	
-    $instance.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$",$ListenerName)
-    $DiscoveryData.AddInstance($instance)
+		$instance = $DiscoveryData.CreateClassInstance("$MPElement[Name='IBM.MQ.Listener']$")
+		$instance.AddProperty("$MPElement[Name='Windows!Microsoft.Windows.Computer']/PrincipalName$",$ComputerName)
+		$instance.AddProperty("$MPElement[Name='IBM.MQ.QueueManager']/QueueManagerName$",$QueueManagerName)
+		$instance.AddProperty("$MPElement[Name='IBM.MQ.Listener']/ListenerName$",$ListenerName)
+		$instance.AddProperty("$MPElement[Name='IBM.MQ.Listener']/QueueManagerName$",$QueueManagerName)	
+		$instance.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$",$ListenerName)
+		$DiscoveryData.AddInstance($instance)
+	  }
   }
-}
 
-# Return Discovery Items Normally           
-$DiscoveryData
-# Return Discovery Bag to the command line for testing (does not work from ISE)
-# $momapi.Return($DiscoveryData)
+	# Return Discovery Items Normally           
+	$DiscoveryData
+	# Return Discovery Bag to the command line for testing (does not work from ISE)
+	# $momapi.Return($DiscoveryData)
+}
 #=================================================================================
 # End MAIN script section
 Set-WinUILanguageOverride
@@ -1954,111 +1960,114 @@ Set-WinUILanguageOverride -Language "en-US"
   # Write-Host "Getting Queues from ($QueueManagerName) using $Qcmd"
   $Qout = Invoke-Expression $Qcmd
   
-  FOREACH ($QLine in $Qout)
+  IF ($Qout -notlike "*IBM MQ queue manager not available.*")
   {
-    $Qmatch = $QLine | Select-String -Pattern 'QUEUE\('
-    IF ($Qmatch)
-    {
-      $QLineSplit = $QLine.Split("(,)")
-      [string]$QueueName = $QLineSplit[1]
-      #Write-Host "Found Queue: ($QueueName)"
+	  FOREACH ($QLine in $Qout)
+	  {
+		$Qmatch = $QLine | Select-String -Pattern 'QUEUE\('
+		IF ($Qmatch)
+		{
+		  $QLineSplit = $QLine.Split("(,)")
+		  [string]$QueueName = $QLineSplit[1]
+		  #Write-Host "Found Queue: ($QueueName)"
 
-      IF ($QueueName -match "SYSTEM.")
-      {
-        #This is a system queue.  Only continue if System Queues should be discovered
-        IF ($DiscoverSystemQueues)
-        {$ContinueDiscovery = $true}
-        ELSE
-        {$ContinueDiscovery = $false}
-      }
-      ELSE
-      {
-        #This is not a system queue.  Continue discovery
-        $ContinueDiscovery = $true
-      }
+		  IF ($QueueName -match "SYSTEM.")
+		  {
+			#This is a system queue.  Only continue if System Queues should be discovered
+			IF ($DiscoverSystemQueues)
+			{$ContinueDiscovery = $true}
+			ELSE
+			{$ContinueDiscovery = $false}
+		  }
+		  ELSE
+		  {
+			#This is not a system queue.  Continue discovery
+			$ContinueDiscovery = $true
+		  }
 
-      IF ($ContinueDiscovery)
-      {
-        #Get Queue Properties
-        $QPropcmd = "cmd /c 'cd $($InstallPath)\bin\ &amp; echo Display Queue ($QueueName) TYPE DESCR MAXDEPTH MAXMSGL | runmqsc $QueueManagerName'"
-        $QPropout = Invoke-Expression $QPropcmd
+		  IF ($ContinueDiscovery)
+		  {
+			#Get Queue Properties
+			$QPropcmd = "cmd /c 'cd $($InstallPath)\bin\ &amp; echo Display Queue ($QueueName) TYPE DESCR MAXDEPTH MAXMSGL | runmqsc $QueueManagerName'"
+			$QPropout = Invoke-Expression $QPropcmd
 
-        FOREACH ($QPropLine in $QPropout)
-        {
-          $QPropMatch = $QPropLine | Select-String -Pattern 'TYPE\('
-          IF ($QPropMatch)
-          {
-            $Splitter = "TYPE"
-            $QPropLine1 = $QPropLine
-            $QPropLineSplit1 = $QPropLine1 -Split $Splitter
-            $TYPE = $QPropLineSplit1[1]
-            $TYPE = ($TYPE.Split(")"))[0]
-            $TYPE = $TYPE -Replace "[(]",""
-            $TYPE = $TYPE.Trim()
-            #Write-Host "$TYPE"         
-          }
+			FOREACH ($QPropLine in $QPropout)
+			{
+			  $QPropMatch = $QPropLine | Select-String -Pattern 'TYPE\('
+			  IF ($QPropMatch)
+			  {
+				$Splitter = "TYPE"
+				$QPropLine1 = $QPropLine
+				$QPropLineSplit1 = $QPropLine1 -Split $Splitter
+				$TYPE = $QPropLineSplit1[1]
+				$TYPE = ($TYPE.Split(")"))[0]
+				$TYPE = $TYPE -Replace "[(]",""
+				$TYPE = $TYPE.Trim()
+				#Write-Host "$TYPE"         
+			  }
 
-          $QPropMatch2 = $QPropLine | Select-String -Pattern 'DESCR\('
-          IF ($QPropMatch2)
-          {
-            $QPropLine2 = $QPropLine
-            $Splitter = "DESCR"
-            $QPropLineSplit2 = $QPropLine2 -Split $Splitter
-            $DESCR = $QPropLineSplit2[1]
-            $DESCR = ($DESCR.Split(")"))[0]
-            $DESCR = $DESCR -Replace "[(]",""
-            $DESCR = $DESCR.Trim()
-            #Write-Host "$DESCR"         
-          }
+			  $QPropMatch2 = $QPropLine | Select-String -Pattern 'DESCR\('
+			  IF ($QPropMatch2)
+			  {
+				$QPropLine2 = $QPropLine
+				$Splitter = "DESCR"
+				$QPropLineSplit2 = $QPropLine2 -Split $Splitter
+				$DESCR = $QPropLineSplit2[1]
+				$DESCR = ($DESCR.Split(")"))[0]
+				$DESCR = $DESCR -Replace "[(]",""
+				$DESCR = $DESCR.Trim()
+				#Write-Host "$DESCR"         
+			  }
 
-          $QPropMatch3 = $QPropLine | Select-String -Pattern 'MAXDEPTH\('
-          IF ($QPropMatch3)
-          {
-            $QPropLine3 = $QPropLine
-            $Splitter = "MAXDEPTH"
-            $QPropLineSplit3 = $QPropLine3 -Split $Splitter
-            $MAXDEPTH = $QPropLineSplit3[1]
-            $MAXDEPTH = ($MAXDEPTH.Split(")"))[0]
-            $MAXDEPTH = $MAXDEPTH -Replace "[(]",""
-            $MAXDEPTH = $MAXDEPTH.Trim()
-            #Write-Host "$MAXDEPTH"         
-          }
+			  $QPropMatch3 = $QPropLine | Select-String -Pattern 'MAXDEPTH\('
+			  IF ($QPropMatch3)
+			  {
+				$QPropLine3 = $QPropLine
+				$Splitter = "MAXDEPTH"
+				$QPropLineSplit3 = $QPropLine3 -Split $Splitter
+				$MAXDEPTH = $QPropLineSplit3[1]
+				$MAXDEPTH = ($MAXDEPTH.Split(")"))[0]
+				$MAXDEPTH = $MAXDEPTH -Replace "[(]",""
+				$MAXDEPTH = $MAXDEPTH.Trim()
+				#Write-Host "$MAXDEPTH"         
+			  }
 
-          $QPropMatch4 = $QPropLine | Select-String -Pattern 'MAXMSGL\('
-          IF ($QPropMatch4)
-          {
-            $QPropLine4 = $QPropLine
-            $Splitter = "MAXMSGL"
-            $QPropLineSplit4 = $QPropLine4 -Split $Splitter
-            $MAXMSGL = $QPropLineSplit4[1]
-            $MAXMSGL = ($MAXMSGL.Split(")"))[0]
-            $MAXMSGL = $MAXMSGL -Replace "[(]",""
-            $MAXMSGL = $MAXMSGL.Trim()
-            #Write-Host "$MAXMSGL"         
-          }
-        }
+			  $QPropMatch4 = $QPropLine | Select-String -Pattern 'MAXMSGL\('
+			  IF ($QPropMatch4)
+			  {
+				$QPropLine4 = $QPropLine
+				$Splitter = "MAXMSGL"
+				$QPropLineSplit4 = $QPropLine4 -Split $Splitter
+				$MAXMSGL = $QPropLineSplit4[1]
+				$MAXMSGL = ($MAXMSGL.Split(")"))[0]
+				$MAXMSGL = $MAXMSGL -Replace "[(]",""
+				$MAXMSGL = $MAXMSGL.Trim()
+				#Write-Host "$MAXMSGL"         
+			  }
+			}
 
-        $momapi.LogScriptEvent($ScriptName,$EventID,0,"`nDiscovering Queue: ($QueueName) `nQueueManagerName: ($QueueManagerName). `nTYPE: ($TYPE). `nDESCR: ($DESCR). `nMAXDEPTH: ($MAXDEPTH). `nMAXMSGL: ($MAXMSGL)")
+			$momapi.LogScriptEvent($ScriptName,$EventID,0,"`nDiscovering Queue: ($QueueName) `nQueueManagerName: ($QueueManagerName). `nTYPE: ($TYPE). `nDESCR: ($DESCR). `nMAXDEPTH: ($MAXDEPTH). `nMAXMSGL: ($MAXMSGL)")
 
-        $instance = $DiscoveryData.CreateClassInstance("$MPElement[Name='IBM.MQ.Queue']$")
-        $instance.AddProperty("$MPElement[Name='Windows!Microsoft.Windows.Computer']/PrincipalName$",$ComputerName)
-        $instance.AddProperty("$MPElement[Name='IBM.MQ.QueueManager']/QueueManagerName$",$QueueManagerName)
-        $instance.AddProperty("$MPElement[Name='IBM.MQ.Queue']/QueueManagerName$",$QueueManagerName)
-        $instance.AddProperty("$MPElement[Name='IBM.MQ.Queue']/QueueName$",$QueueName)
-        $instance.AddProperty("$MPElement[Name='IBM.MQ.Queue']/TYPE$",$TYPE)
-        $instance.AddProperty("$MPElement[Name='IBM.MQ.Queue']/DESCR$",$DESCR)
-        $instance.AddProperty("$MPElement[Name='IBM.MQ.Queue']/MAXDEPTH$",$MAXDEPTH)
-        $instance.AddProperty("$MPElement[Name='IBM.MQ.Queue']/MAXMSGL$",$MAXMSGL)
-        $instance.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$",$QueueName)
-        $DiscoveryData.AddInstance($instance)
-      }
-    }
-  }
+			$instance = $DiscoveryData.CreateClassInstance("$MPElement[Name='IBM.MQ.Queue']$")
+			$instance.AddProperty("$MPElement[Name='Windows!Microsoft.Windows.Computer']/PrincipalName$",$ComputerName)
+			$instance.AddProperty("$MPElement[Name='IBM.MQ.QueueManager']/QueueManagerName$",$QueueManagerName)
+			$instance.AddProperty("$MPElement[Name='IBM.MQ.Queue']/QueueManagerName$",$QueueManagerName)
+			$instance.AddProperty("$MPElement[Name='IBM.MQ.Queue']/QueueName$",$QueueName)
+			$instance.AddProperty("$MPElement[Name='IBM.MQ.Queue']/TYPE$",$TYPE)
+			$instance.AddProperty("$MPElement[Name='IBM.MQ.Queue']/DESCR$",$DESCR)
+			$instance.AddProperty("$MPElement[Name='IBM.MQ.Queue']/MAXDEPTH$",$MAXDEPTH)
+			$instance.AddProperty("$MPElement[Name='IBM.MQ.Queue']/MAXMSGL$",$MAXMSGL)
+			$instance.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$",$QueueName)
+			$DiscoveryData.AddInstance($instance)
+		  }
+		}
+	  }
 
-# Return Discovery Items Normally           
-$DiscoveryData
-# Return Discovery Bag to the command line for testing (does not work from ISE)
-# $momapi.Return($DiscoveryData)
+	# Return Discovery Items Normally           
+	$DiscoveryData
+	# Return Discovery Bag to the command line for testing (does not work from ISE)
+	# $momapi.Return($DiscoveryData)
+  }	
 #=================================================================================
 # End MAIN script section
 Set-WinUILanguageOverride
