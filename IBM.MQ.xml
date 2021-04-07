@@ -3,7 +3,7 @@
 	<Manifest>
 		<Identity>
 			<ID>IBM.MQ</ID>
-			<Version>3.2.1.8</Version>
+			<Version>3.2.1.9</Version>
 		</Identity>
 		<Name>IBM.MQ</Name>
 		<References>
@@ -1928,7 +1928,7 @@ param($SourceId,$ManagedEntityId,[string]$ComputerName,[string]$QueueManagerName
 # ScriptName should be the same as the ID of the module that the script is contained in
 $ScriptName = "IBM.MQ.Queue.Discovery.ps1"
 $EventID = "7104"
-[bool]$DiscoverSystemQueues = $true
+[bool]$DiscoverSystemQueues = $false
 #=================================================================================
 
 
