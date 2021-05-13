@@ -3,7 +3,7 @@
 	<Manifest>
 		<Identity>
 			<ID>IBM.MQ</ID>
-			<Version>3.2.1.6</Version>
+			<Version>3.2.1.7</Version>
 		</Identity>
 		<Name>IBM.MQ</Name>
 		<References>
@@ -2811,12 +2811,10 @@ Queue Manager Name {0}</Description>
 					<Description></Description>
 				</DisplayString>
 				<DisplayString ElementID="IBM.MQ.QueueManagerStatus.Monitor.AlertMessage">
-					<Name>IBM Queue Manager Status is Not Running</Name>
-					<Description>IBM Queue Manager Status is not Running.
-
-Status: {0}
-Queue Manager Name: {1}
-Host Name: {2}</Description>
+					<Name>IBM Queue Manager is Not Running</Name>
+					<Description>IBM Queue Manager is not Running.
+Status: {1}
+Queue Manager Name: {0}</Description>
 				</DisplayString>
 				<DisplayString ElementID="IBM.MQ.QueueManagerStatus.Monitor" SubElementID="Error">
 					<Name>Error</Name>
